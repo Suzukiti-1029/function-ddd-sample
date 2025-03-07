@@ -1,0 +1,11 @@
+services:
+  dev:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./
+        target: /workspace/function-ddd-sample
+    # コンテナが常時動作するようなコマンド、ここでは例として sleep を利用
+    command: sleep infinity

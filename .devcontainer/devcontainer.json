@@ -1,12 +1,9 @@
 {
   "name": "F# Dev Container",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "."
-  },
-  // VSCode側でフォルダーをマウントするための設定
-  "workspaceFolder": "/workspace",
-  "postCreateCommand": "dotnet --version",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "dev",
+  "workspaceFolder": "/workspace/function-ddd-sample",
+  // "postCreateCommand": "dotnet fsi --version",
   "remoteUser": "root",
   "customizations": {
     "vscode": {
