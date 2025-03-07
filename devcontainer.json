@@ -1,0 +1,23 @@
+{
+  "name": "F# Dev Container",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "."
+  },
+  // VSCode側でフォルダーをマウントするための設定
+  "workspaceFolder": "/workspace",
+  "postCreateCommand": "dotnet --version",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      // 必要な拡張機能を自動でインストール
+      "extensions": [
+        "ionide.ionide-fsharp", // F#開発用拡張機能
+        "ms-dotnettools.csharp" // C#拡張（必要に応じて、F#プロジェクトでも利用する場合がある）
+      ]
+    }
+  }
+}
