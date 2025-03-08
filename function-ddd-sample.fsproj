@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -6,7 +6,7 @@
     <RootNamespace>function_ddd_sample</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup><Compile Include="OrderTaking/Domain.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
