@@ -1,5 +1,7 @@
 namespace OrderTaking.Domain
 
+open FSharpx.Collections
+
 // 型の定義
 
 // TODO 未知の型
@@ -15,8 +17,24 @@ type ProductCode =
   | Gizmo of GizmoCode
 
 // 注文数量関係
-type UnitQuantity = UnitQuantity of int
-type KilogramQuantity = KilogramQuantity of decimal
+type UnitQuantity = private UnitQuantity of int
+module UnitQuantity =
+  // ユニット数の「スマートコンストラクタ」を定義
+  let create qty =
+    if qty < 1 then
+      // 失敗
+      Error "UnitQuantity can not be negative"
+    else if qty > 1000 then
+      // 失敗
+      Error "UnitQuantity can not be more than 1000"
+    else
+      // 成功 -- 戻り値を構築
+      Ok (UnitQuantity qty)
+  let value(UnitQuantity qty) = qty
+
+type KilogramQuantity = KilogramQuantity of decimal<
+  Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols.kg
+>
 type OrderQuantity =
     | Unit of UnitQuantity
     | Kilos of KilogramQuantity
@@ -28,17 +46,22 @@ type CustomerID = Undefined
 
 // 注文とその構成要素
 type CustomerInfo = Undefined
-type ShippingAddress = Undefined
 type BillingAddress = Undefined
+
+type UnValidatedAddress = UnValidateAddress of string
+type ValidatedAddress = private ValidateAddress of string
+module ValidateAddress =
+  let value(ValidateAddress address) = address
+
 type Price = Undefined
 type BillingAmount = Undefined
 
 type Order = {
     ID: OrderID // エンティティのID
     CustomerID: CustomerID // 顧客の参照
-    ShippingAddress: ShippingAddress
+    ShippingAddress: ValidatedAddress
     BillingAddress: BillingAddress
-    OrderLines: OrderLine list
+    OrderLines: NonEmptyList<OrderLine>
     AmountToBill: BillingAmount
 }
 and OrderLine = {
@@ -53,7 +76,7 @@ and OrderLine = {
 type UnValidatedOrder = {
   OrderID: string
   CustomerInfo: Undefined
-  ShippingAddress: Undefined
+  ShippingAddress: UnValidatedAddress
   // TODO ...
 }
 
@@ -76,6 +99,10 @@ type ValidationError = {
 type PlaceOrderError =
   | ValidationError of ValidationError list
 // TODO  | ... その他のエラー
+
+// サブステップ：住所検証サービス
+type AddressValidationService =
+  UnValidatedAddress -> ValidatedAddress option // 失敗するかも
 
 // 注文確定のワークフロー：「注文確定」プロセス
 type PlaceOrder =
