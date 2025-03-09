@@ -11,7 +11,7 @@ type Command<'data> = {
   Data: 'data
   Timestamp: DateTime
   UserID: string
-  // TODO ...
+  // TODO etc...
 }
 
 // 型の定義
@@ -54,43 +54,69 @@ type OrderLineID = Undefined
 type CustomerID = Undefined
 
 // 注文とその構成要素
-type CustomerInfo = Undefined
-type BillingAddress = Undefined
-
-type UnValidatedAddress = UnValidateAddress of string
-type ValidatedAddress = private ValidateAddress of string
-module ValidateAddress =
-  let value(ValidateAddress address) = address
-
-type Price = Undefined
-type BillingAmount = Undefined
-
-type Order = {
-    ID: OrderID // エンティティのID
-    CustomerID: CustomerID // 顧客の参照
-    ShippingAddress: ValidatedAddress
-    BillingAddress: BillingAddress
-    OrderLines: NonEmptyList<OrderLine>
-    AmountToBill: BillingAmount
-}
-and OrderLine = {
-  ID: OrderLineID // エンティティのID
-  OrderID: OrderID
-  ProductCode: ProductCode
-  OrderQuantity: OrderQuantity
-  Price: Price
-}
-
-// ワークフローの入力（コマンド）
 type UnValidatedCustomerInfo = Undefined
+type UnValidatedAddress = UnValidateAddress of string
 
 type UnValidatedOrder = {
   OrderID: string
   CustomerInfo: UnValidatedCustomerInfo
   ShippingAddress: UnValidatedAddress
-  // TODO ...
+  // TODO etc...
 }
 
+type CustomerInfo = Undefined
+type Address = Address of string
+type ValidatedOrderLine = Undefined
+
+type ValidatedOrder = {
+  OrderID: OrderID // エンティティのID
+  CustomerInfo: CustomerInfo
+  ShippingAddress: Address
+  BillingAddress: Address
+  OrderLines: ValidatedOrderLine list
+}
+
+type PricedOrderLine = Undefined
+type BillingAmount = Undefined
+type PricedOrder = {
+  OrderID: OrderID // エンティティのID
+  CustomerInfo: CustomerInfo
+  ShippingAddress: Address
+  BillingAddress: Address
+  // 検証済の注文明細行とは異なる
+  OrderLines: PricedOrderLine list
+  AmountToBill: BillingAmount
+}
+
+type Order =
+  | UnValidated of UnValidatedOrder
+  | Validated of ValidatedOrder
+  | Priced of PricedOrder
+  // etc...
+
+// type BillingAddress = Undefined
+type ValidatedAddress = private ValidateAddress of string
+module ValidateAddress =
+  let value(ValidateAddress address) = address
+// type Price = Undefined
+
+// type Order = {
+//     ID: OrderID // エンティティのID
+//     CustomerID: CustomerID // 顧客の参照
+//     ShippingAddress: ValidatedAddress
+//     BillingAddress: BillingAddress
+//     OrderLines: NonEmptyList<OrderLine>
+//     AmountToBill: BillingAmount
+// }
+// and OrderLine = {
+//   ID: OrderLineID // エンティティのID
+//   OrderID: OrderID
+//   ProductCode: ProductCode
+//   OrderQuantity: OrderQuantity
+//   Price: Price
+// }
+
+// ワークフローの入力（コマンド）
 type PlaceOrder = Command<UnValidatedOrder>
 
 type OrderTakingCommand =
@@ -118,7 +144,7 @@ type ValidationError = {
 
 type PlaceOrderError =
   | ValidationError of ValidationError list
-// TODO  | ... その他のエラー
+// TODO  | etc... その他のエラー
 
 // サブステップ：住所検証サービス
 type AddressValidationService =
