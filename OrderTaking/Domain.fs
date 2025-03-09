@@ -118,6 +118,12 @@ type Order =
 // // type AddressValidationService =
 // //   UnValidatedAddress -> ValidatedAddress option // 失敗するかも
 
+// * エラー
+type ValidationError = {
+    FieldName: string
+    ErrorDescription: string
+}
+
 // * ワークフローの入力（コマンド）
 type PlaceOrder = Command<UnValidatedOrder>
 
@@ -126,27 +132,6 @@ type OrderTakingCommand =
   // * 他のコマンドをひとまとめにする（チャネルなどで1つのデータ構造で受け取る時）
   // | Change of ChangeOrder
   // | Cancel of CancelOrder
-
-// * ワークフロー成功時の出力（イベント型）
-type AcknowledgementSent = Undefined
-type OrderPlaced = Undefined
-type BillableOrderPlaced = Undefined
-
-type PlaceOrderEvents = {
-    AcknowledgementSent: AcknowledgementSent
-    OrderPlaced: OrderPlaced
-    BillableOrderPlaced: BillableOrderPlaced
-}
-
-// * ワークフロー失敗時の出力（エラー型）
-type ValidationError = {
-    FieldName: string
-    ErrorDescription: string
-}
-
-type PlaceOrderError =
-  | ValidationError of ValidationError list
-// TODO  | etc... その他のエラー
 
 // * サブステップ：検証
 // ? 外部依存関係：製品コード存在確認サービス
@@ -202,6 +187,26 @@ type AcknowledgeOrder =
     // 注文書が送信されていない可能性
     -> OrderAcknowledgmentSent option // 出力
 
+// * サブステップ：イベント作成・返却
+// * （ワークフロー成功時の出力（イベント型））
+type OrderPlaced = PricedOrder
+type BillableOrderPlaced = {
+  OrderID: OrderID
+  BillingAddress: Address
+  AmountToBill: BillingAmount
+}
+type PlaceOrderEvent =
+  | OrderPlaced of OrderPlaced
+  | BillableOrderPlaced of BillableOrderPlaced
+  | AcknowledgementSent of OrderAcknowledgmentSent
+type CreateEvents =
+  PricedOrder -> PlaceOrderEvent list
+
+// * ワークフロー失敗時の出力（エラー型）
+type PlaceOrderError =
+  | ValidationError of ValidationError list
+// TODO  | etc... その他のエラー
+
 // * 注文確定のワークフロー：「注文確定」プロセス
 type PlacingOrder =
-  UnValidatedOrder -> Result<PlaceOrderEvents, PlaceOrderError>
+  UnValidatedOrder -> Result<PlaceOrderEvent list, PlaceOrderError>
