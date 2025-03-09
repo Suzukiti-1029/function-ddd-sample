@@ -161,10 +161,12 @@ type ValidateOrder =
 type Price = Undefined
 type GetProductPrice = ProductCode -> Price
 
+type PricingError = PricingError of string
+// エラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
 type PriceOrder =
   GetProductPrice // 依存関係
     -> ValidateOrder // 入力
-    -> PricedOrder // 出力
+    -> Result<PricedOrder, PricingError> // 出力
 
 // * サブステップ：注文確認
 // ? 内部依存関係：注文確認の文書生成サービス
