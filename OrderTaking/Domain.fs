@@ -181,8 +181,9 @@ type CreateOrderAcknowledgementLetter =
 
 // ? 内部依存関係：注文確認送信サービス
 type SendResult = Sent | NotSent
+// I/O処理をするが、エラーは気にしない
 type SendOrderAcknowledgment =
-  OrderAcknowledgment -> SendResult
+  OrderAcknowledgment -> Async<SendResult>
 
 type OrderAcknowledgmentSent = {
   OrderID: OrderID
@@ -193,7 +194,7 @@ type AcknowledgeOrder =
     -> SendOrderAcknowledgment // 依存関係
     -> PricedOrder // 入力
     // 注文書が送信されていない可能性
-    -> OrderAcknowledgmentSent option // 出力
+    -> Async<OrderAcknowledgmentSent option> // 出力
 
 // * サブステップ：イベント作成・返却
 // * （ワークフロー成功時の出力（イベント型））
