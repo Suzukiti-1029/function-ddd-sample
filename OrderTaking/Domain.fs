@@ -175,6 +175,33 @@ type PriceOrder =
     -> ValidateOrder // 入力
     -> PricedOrder // 出力
 
+// * サブステップ：注文確認
+// ? 内部依存関係：注文確認の文書生成サービス
+type HTMLString = HTMLString of string
+type EmailAddress = Undefined
+type OrderAcknowledgment = {
+  EmailAddress: EmailAddress
+  Letter: HTMLString
+}
+type CreateOrderAcknowledgementLetter =
+  PricedOrder -> HTMLString
+
+// ? 内部依存関係：注文確認送信サービス
+type SendResult = Sent | NotSent
+type SendOrderAcknowledgment =
+  OrderAcknowledgment -> SendResult
+
+type OrderAcknowledgmentSent = {
+  OrderID: OrderID
+  EmailAddress: EmailAddress
+}
+type AcknowledgeOrder =
+  CreateOrderAcknowledgementLetter // 依存関係
+    -> SendOrderAcknowledgment // 依存関係
+    -> PricedOrder // 入力
+    // 注文書が送信されていない可能性
+    -> OrderAcknowledgmentSent option // 出力
+
 // * 注文確定のワークフロー：「注文確定」プロセス
 type PlacingOrder =
   UnValidatedOrder -> Result<PlaceOrderEvents, PlaceOrderError>
