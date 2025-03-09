@@ -95,9 +95,9 @@ type Order =
   // etc...
 
 // // type BillingAddress = Undefined
-type ValidatedAddress = private ValidateAddress of string
-module ValidateAddress =
-  let value(ValidateAddress address) = address
+// // type ValidatedAddress = private ValidateAddress of string
+// // module ValidateAddress =
+// //   let value(ValidateAddress address) = address
 // // type Price = Undefined
 
 // // type Order = {
@@ -115,6 +115,9 @@ module ValidateAddress =
 // //   OrderQuantity: OrderQuantity
 // //   Price: Price
 // // }
+// // // 住所検証サービス
+// // type AddressValidationService =
+// //   UnValidatedAddress -> ValidatedAddress option // 失敗するかも
 
 // * ワークフローの入力（コマンド）
 type PlaceOrder = Command<UnValidatedOrder>
@@ -146,9 +149,22 @@ type PlaceOrderError =
   | ValidationError of ValidationError list
 // TODO  | etc... その他のエラー
 
-// サブステップ：住所検証サービス
-type AddressValidationService =
-  UnValidatedAddress -> ValidatedAddress option // 失敗するかも
+// * サブステップ：検証
+// ? 依存関係：製品コード存在確認サービス
+type CheckProductCodeExists = ProductCode -> bool
+
+// ? 依存関係：住所存在確認サービス
+// TODO 仮
+type CheckedAddress = CheckedAddress of UnValidatedAddress
+type AddressValidationError = AddressValidationError of string
+type CheckAddressExists =
+  UnValidatedAddress -> Result<CheckedAddress, AddressValidationError>
+
+type ValidateOrder =
+  CheckProductCodeExists // 依存関係
+    -> CheckAddressExists // 依存関係
+    -> UnValidatedOrder // 入力
+    -> Result<ValidatedOrder, ValidationError> // 出力
 
 // * 注文確定のワークフロー：「注文確定」プロセス
 type PlacingOrder =
