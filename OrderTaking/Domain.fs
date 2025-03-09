@@ -1,11 +1,20 @@
 namespace OrderTaking.Domain
 
+// 共通の型
 open FSharpx.Collections
-
-// 型の定義
 
 // TODO 未知の型
 type Undefined = exn
+
+type DateTime = Undefined
+type Command<'data> = {
+  Data: 'data
+  Timestamp: DateTime
+  UserID: string
+  // TODO ...
+}
+
+// 型の定義
 
 // 製品コード関連
 type WidgetCode = WidgetCode of string
@@ -72,13 +81,23 @@ and OrderLine = {
   Price: Price
 }
 
-// ワークフローの入力
+// ワークフローの入力（コマンド）
+type UnValidatedCustomerInfo = Undefined
+
 type UnValidatedOrder = {
   OrderID: string
-  CustomerInfo: Undefined
+  CustomerInfo: UnValidatedCustomerInfo
   ShippingAddress: UnValidatedAddress
   // TODO ...
 }
+
+type PlaceOrder = Command<UnValidatedOrder>
+
+type OrderTakingCommand =
+  | Place of PlaceOrder
+  // * 他のコマンドをひとまとめにする（チャネルなどで1つのデータ構造で受け取る時）
+  // | Change of ChangeOrder
+  // | Cancel of CancelOrder
 
 // ワークフロー成功時の出力（イベント型）
 type AcknowledgementSent = Undefined
@@ -90,6 +109,7 @@ type PlaceOrderEvents = {
     OrderPlaced: OrderPlaced
     BillableOrderPlaced: BillableOrderPlaced
 }
+
 // ワークフロー失敗時の出力（エラー型）
 type ValidationError = {
     FieldName: string
@@ -105,5 +125,5 @@ type AddressValidationService =
   UnValidatedAddress -> ValidatedAddress option // 失敗するかも
 
 // 注文確定のワークフロー：「注文確定」プロセス
-type PlaceOrder =
+type PlacingOrder =
   UnValidatedOrder -> Result<PlaceOrderEvents, PlaceOrderError>
