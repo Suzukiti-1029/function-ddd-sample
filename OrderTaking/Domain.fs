@@ -1,6 +1,6 @@
 namespace OrderTaking.Domain
 
-// 共通の型
+// ! 共通の型
 open FSharpx.Collections
 
 // TODO 未知の型
@@ -14,9 +14,9 @@ type Command<'data> = {
   // TODO etc...
 }
 
-// 型の定義
+// ! 型の定義
 
-// 製品コード関連
+// * 製品コード関連
 type WidgetCode = WidgetCode of string
   // 制約: 先頭が"W"＋数字4桁
 type GizmoCode = GizmoCode of string
@@ -25,7 +25,7 @@ type ProductCode =
   | Widget of WidgetCode
   | Gizmo of GizmoCode
 
-// 注文数量関係
+// * 注文数量関係
 type UnitQuantity = private UnitQuantity of int
 module UnitQuantity =
   // ユニット数の「スマートコンストラクタ」を定義
@@ -48,12 +48,12 @@ type OrderQuantity =
     | Unit of UnitQuantity
     | Kilos of KilogramQuantity
 
-// 識別子
+// * 識別子
 type OrderID = Undefined
 type OrderLineID = Undefined
 type CustomerID = Undefined
 
-// 注文とその構成要素
+// * 注文とその構成要素
 type UnValidatedCustomerInfo = Undefined
 type UnValidatedAddress = UnValidateAddress of string
 
@@ -94,29 +94,29 @@ type Order =
   | Priced of PricedOrder
   // etc...
 
-// type BillingAddress = Undefined
+// // type BillingAddress = Undefined
 type ValidatedAddress = private ValidateAddress of string
 module ValidateAddress =
   let value(ValidateAddress address) = address
-// type Price = Undefined
+// // type Price = Undefined
 
-// type Order = {
-//     ID: OrderID // エンティティのID
-//     CustomerID: CustomerID // 顧客の参照
-//     ShippingAddress: ValidatedAddress
-//     BillingAddress: BillingAddress
-//     OrderLines: NonEmptyList<OrderLine>
-//     AmountToBill: BillingAmount
-// }
-// and OrderLine = {
-//   ID: OrderLineID // エンティティのID
-//   OrderID: OrderID
-//   ProductCode: ProductCode
-//   OrderQuantity: OrderQuantity
-//   Price: Price
-// }
+// // type Order = {
+// //     ID: OrderID // エンティティのID
+// //     CustomerID: CustomerID // 顧客の参照
+// //     ShippingAddress: ValidatedAddress
+// //     BillingAddress: BillingAddress
+// //     OrderLines: NonEmptyList<OrderLine>
+// //     AmountToBill: BillingAmount
+// // }
+// // and OrderLine = {
+// //   ID: OrderLineID // エンティティのID
+// //   OrderID: OrderID
+// //   ProductCode: ProductCode
+// //   OrderQuantity: OrderQuantity
+// //   Price: Price
+// // }
 
-// ワークフローの入力（コマンド）
+// * ワークフローの入力（コマンド）
 type PlaceOrder = Command<UnValidatedOrder>
 
 type OrderTakingCommand =
@@ -125,7 +125,7 @@ type OrderTakingCommand =
   // | Change of ChangeOrder
   // | Cancel of CancelOrder
 
-// ワークフロー成功時の出力（イベント型）
+// * ワークフロー成功時の出力（イベント型）
 type AcknowledgementSent = Undefined
 type OrderPlaced = Undefined
 type BillableOrderPlaced = Undefined
@@ -136,7 +136,7 @@ type PlaceOrderEvents = {
     BillableOrderPlaced: BillableOrderPlaced
 }
 
-// ワークフロー失敗時の出力（エラー型）
+// * ワークフロー失敗時の出力（エラー型）
 type ValidationError = {
     FieldName: string
     ErrorDescription: string
@@ -150,6 +150,6 @@ type PlaceOrderError =
 type AddressValidationService =
   UnValidatedAddress -> ValidatedAddress option // 失敗するかも
 
-// 注文確定のワークフロー：「注文確定」プロセス
+// * 注文確定のワークフロー：「注文確定」プロセス
 type PlacingOrder =
   UnValidatedOrder -> Result<PlaceOrderEvents, PlaceOrderError>
