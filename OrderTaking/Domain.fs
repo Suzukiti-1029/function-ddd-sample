@@ -98,7 +98,6 @@ type Order =
 // // type ValidatedAddress = private ValidateAddress of string
 // // module ValidateAddress =
 // //   let value(ValidateAddress address) = address
-// // type Price = Undefined
 
 // // type Order = {
 // //     ID: OrderID // エンティティのID
@@ -165,6 +164,16 @@ type ValidateOrder =
     -> CheckAddressExists // 依存関係
     -> UnValidatedOrder // 入力
     -> Result<ValidatedOrder, ValidationError> // 出力
+
+// * サブステップ：価格計算
+// ? 依存関係：価格計算サービス
+type Price = Undefined
+type GetProductPrice = ProductCode -> Price
+
+type PriceOrder =
+  GetProductPrice // 依存関係
+    -> ValidateOrder // 入力
+    -> PricedOrder // 出力
 
 // * 注文確定のワークフロー：「注文確定」プロセス
 type PlacingOrder =
