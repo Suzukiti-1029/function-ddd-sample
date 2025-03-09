@@ -149,10 +149,10 @@ type PlaceOrderError =
 // TODO  | etc... その他のエラー
 
 // * サブステップ：検証
-// ? 依存関係：製品コード存在確認サービス
+// ? 外部依存関係：製品コード存在確認サービス
 type CheckProductCodeExists = ProductCode -> bool
 
-// ? 依存関係：住所存在確認サービス
+// ? 外部依存関係：住所存在確認サービス
 // TODO 仮
 type CheckedAddress = CheckedAddress of UnValidatedAddress
 type AddressValidationError = AddressValidationError of string
@@ -166,7 +166,7 @@ type ValidateOrder =
     -> Result<ValidatedOrder, ValidationError> // 出力
 
 // * サブステップ：価格計算
-// ? 依存関係：価格計算サービス
+// ? 外部依存関係：価格計算サービス
 type Price = Undefined
 type GetProductPrice = ProductCode -> Price
 
