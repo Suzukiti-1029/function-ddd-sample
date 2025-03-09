@@ -136,12 +136,12 @@ type OrderTakingCommand =
   // | Cancel of CancelOrder
 
 // * サブステップ：検証
-// ? 外部依存関係：製品コード存在確認サービス
+// ? 依存関係：製品コード存在確認サービス
 // エラーを返す可能性がなく、リモート呼び出しでもない（自律性）
 // （ローカルなキャッシュコピーが利用可能） としている
 type CheckProductCodeExists = ProductCode -> bool
 
-// ? 外部依存関係：住所存在確認サービス
+// ? 依存関係：住所存在確認サービス
 // TODO 仮
 type CheckedAddress = CheckedAddress of UnValidatedAddress
 
@@ -157,21 +157,22 @@ type ValidateOrder =
     -> AsyncResult<ValidatedOrder, ValidationError list> // 出力
 
 // * サブステップ：価格計算
-// ? 外部依存関係：価格計算サービス
+// ? 依存関係：価格計算サービス
 type Price = Undefined
 type GetProductPrice = ProductCode -> Price
 
 type PricingError = PricingError of string
-// エラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
+// サブステップ自体にエラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
 type PriceOrder =
   GetProductPrice // 依存関係
     -> ValidateOrder // 入力
     -> Result<PricedOrder, PricingError> // 出力
 
 // * サブステップ：注文確認
-// ? 内部依存関係：注文確認の文書生成サービス
+// ? 依存関係：注文確認の文書生成サービス
 type HTMLString = HTMLString of string
 type EmailAddress = Undefined
+// ローカル関数
 type OrderAcknowledgment = {
   EmailAddress: EmailAddress
   Letter: HTMLString
@@ -179,7 +180,7 @@ type OrderAcknowledgment = {
 type CreateOrderAcknowledgementLetter =
   PricedOrder -> HTMLString
 
-// ? 内部依存関係：注文確認送信サービス
+// ? 依存関係：注文確認送信サービス
 type SendResult = Sent | NotSent
 // I/O処理をするが、エラーは気にしない
 type SendOrderAcknowledgment =
