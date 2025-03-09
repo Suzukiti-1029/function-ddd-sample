@@ -14,6 +14,8 @@ type Command<'data> = {
   // TODO etc...
 }
 
+type AsyncResult<'success, 'failure> = Async<Result<'success, 'failure>>
+
 // ! 型の定義
 
 // * 製品コード関連
@@ -135,20 +137,24 @@ type OrderTakingCommand =
 
 // * サブステップ：検証
 // ? 外部依存関係：製品コード存在確認サービス
+// エラーを返す可能性がなく、リモート呼び出しでもない（自律性）
+// （ローカルなキャッシュコピーが利用可能） としている
 type CheckProductCodeExists = ProductCode -> bool
 
 // ? 外部依存関係：住所存在確認サービス
 // TODO 仮
 type CheckedAddress = CheckedAddress of UnValidatedAddress
+
 type AddressValidationError = AddressValidationError of string
+// リモートのサービスを呼び出している
 type CheckAddressExists =
-  UnValidatedAddress -> Result<CheckedAddress, AddressValidationError>
+  UnValidatedAddress -> AsyncResult<CheckedAddress, AddressValidationError>
 
 type ValidateOrder =
   CheckProductCodeExists // 依存関係
     -> CheckAddressExists // 依存関係
     -> UnValidatedOrder // 入力
-    -> Result<ValidatedOrder, ValidationError> // 出力
+    -> AsyncResult<ValidatedOrder, ValidationError list> // 出力
 
 // * サブステップ：価格計算
 // ? 外部依存関係：価格計算サービス
