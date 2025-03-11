@@ -218,5 +218,6 @@ type PlaceOrderError =
 // TODO  | etc... その他のエラー
 
 // * 注文確定のワークフロー：「注文確定」プロセス
-type PlacingOrder =
-  UnValidatedOrder -> Result<PlaceOrderEvent list, PlaceOrderError>
+type PlaceOrderWorkflow =
+  PlaceOrder // 入力
+    -> AsyncResult<PlaceOrderEvent list, PlaceOrderError> // 出力
