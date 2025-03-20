@@ -1,0 +1,293 @@
+@startuml クラス図
+
+' 設定
+hide empty members
+
+skinparam class {
+  BackgroundColor<<SubStep>> LightSkyBlue
+  BackgroundColor<<Dependency>> LightGreen
+  BackgroundColor<<Entity>> LightSalmon
+  BackgroundColor<<Event>> Plum
+  BackgroundColor<<Error>> OrangeRed
+  BackgroundColor<<Command>> Turquoise
+  BackgroundColor<<WorkFlow>> Yellow
+}
+
+' 外部ライブラリ
+package Microsoft.Fsharp {
+  class Async<Result<success, failure>> {}
+}
+package Fsharpx.Collections {}
+
+' 共通
+interface Undefined <<exn>> {}
+
+class DateTime extends Undefined {}
+
+class Command<data> <<Command>> {
+  + Data: data
+  + Timestamp: DateTime
+  + UserID: string
+  ' TODO etc...
+}
+DateTime <-- Command
+
+class AsyncResult<success, failure> extends Microsoft.Fsharp.Async {}
+
+' 型の定義
+class WidgetCode {
+  + WidgetCode: string
+}
+
+class GizmoCode {
+  + GizmoCode: string
+}
+
+enum ProductCode {
+  + Widget of WidgetCode
+  + Gizmo of GizmoCode
+}
+WidgetCode <-- ProductCode
+GizmoCode <-- ProductCode
+
+class UnitQuantity {
+  - UnitQuantity: int
+  + create(qty: int): Result<UnitQuantity, Error>
+  + value(qty: UnitQuantity): UnitQuantity
+}
+class KilogramQuantity {
+  - KilogramQuantity: decimal<kg>
+}
+Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols.kg <-- KilogramQuantity
+
+enum OrderQuantity {
+  + Unit: UnitQuantity
+  + Kilos: KilogramQuantity
+}
+UnitQuantity <-- OrderQuantity
+KilogramQuantity <-- OrderQuantity
+
+class OrderID extends Undefined {}
+class OrderLineID extends Undefined {}
+class CustomerID extends Undefined {}
+
+class UnValidatedCustomerInfo extends Undefined {}
+' TODO これは値オブジェクトにせず、プリミティブの方が良いと思われる
+class UnValidatedAddress {
+  + UnValidatedAddress: string
+}
+
+class UnValidatedOrder <<Entity>> {
+  OrderID: string
+  CustomerInfo: UnValidatedCustomerInfo
+  ShippingAddress: UnValidatedAddress
+  ' TODO etc...
+}
+UnValidatedCustomerInfo <-- UnValidatedOrder
+UnValidatedAddress <-- UnValidatedOrder
+
+class CustomerInfo extends Undefined {}
+class Address {
+  + Address: string
+}
+class ValidatedOrderLine extends Undefined {}
+
+class ValidatedOrder <<Entity>> {
+  + OrderID: OrderID
+  + CustomerInfo: CustomerInfo
+  + ShippingAddress: Address
+  + BillingAddress: Address
+  + OrderLines: ValidatedOrderLine list
+}
+OrderID <-- ValidatedOrder
+CustomerInfo <-- ValidatedOrder
+Address <-- ValidatedOrder
+ValidatedOrderLine <-- ValidatedOrder
+
+class PricedOrderLine extends Undefined {}
+class BillingAmount extends Undefined {}
+
+class PricedOrder <<Entity>> {
+  OrderID: OrderID
+  CustomerInfo: CustomerInfo
+  ShippingAddress: Address
+  BillingAddress: Address
+  OrderLines: PricedOrderLine list
+  AmountToBill: BillingAmount
+}
+OrderID <-- PricedOrder
+CustomerInfo <-- PricedOrder
+Address <-- PricedOrder
+PricedOrderLine <-- PricedOrder
+BillingAmount <-- PricedOrder
+
+enum Order <<Entity>> {
+  + UnValidated: UnValidatedOrder
+  + Validated: ValidatedOrder
+  + Priced: PricedOrder
+}
+UnValidatedOrder <-- Order
+ValidatedOrder <-- Order
+PricedOrder <-- Order
+
+class ValidationError <<Error>> {
+  + FieldName: string
+  + ErrorDescription: string
+}
+
+' ワークフローの入力（コマンド）
+class PlaceOrder <<Command>> extends Command {
+  <data = UnValidatedOrder>
+}
+UnValidatedOrder <-- PlaceOrder
+
+enum OrderTakingCommand <<Command>> {
+  + Place: PlaceOrder
+  ' + Change: ChangeOrder
+  ' + Cancel: CancelOrder
+}
+PlaceOrder <-- OrderTakingCommand
+
+' サブステップ：検証
+class CheckProductCodeExists <<Dependency>> {
+  + CheckProductCodeExists(ProductCode)\n\t: bool
+}
+ProductCode <-- CheckProductCodeExists
+
+' TODO 仮（違う）
+class CheckedAddress {
+  + CheckedAddress: UnValidatedAddress
+}
+UnValidatedAddress <-- CheckedAddress
+
+class AddressValidationError <<Error>> {
+  + AddressValidationError: string
+}
+
+class CheckAddressExists <<Dependency>> {
+  + CheckAddressExists(UnValidatedAddress)\n\t: AsyncResult<CheckedAddress, AddressValidationError>
+}
+UnValidatedAddress <-- CheckAddressExists
+AsyncResult <-- CheckAddressExists
+CheckedAddress <-- CheckAddressExists
+AddressValidationError <-- CheckAddressExists
+
+class ValidateOrder <<SubStep>> {
+  + ValidateOrder(\n\t CheckProductCodeExists,\n\t CheckAddressExists,\n\t UnValidatedOrder,\n ): AsyncResult<ValidatedOrder, ValidationError list>
+}
+CheckProductCodeExists <-- ValidateOrder
+CheckAddressExists <-- ValidateOrder
+UnValidatedOrder <-- ValidateOrder
+AsyncResult <-- ValidateOrder
+ValidatedOrder <-- ValidateOrder
+ValidationError <-- ValidateOrder
+
+' サブステップ：価格計算
+class Price extends Undefined {}
+
+class GetProductPrice <<Dependency>> {
+  + GetProductPrice(ProductCode): Price
+}
+ProductCode <-- GetProductPrice
+Price <-- GetProductPrice
+
+class PricingError <<Error>> {
+  + PricingError: string
+}
+
+class PriceOrder <<SubStep>> {
+  + PriceOrder(\n\t GetProductPrice,\n\t ValidatedOrder,\n ): Result<PricedOrder, PricingError>
+}
+GetProductPrice <-- PriceOrder
+ValidatedOrder <-- PriceOrder
+PricedOrder <-- PriceOrder
+PricingError <-- PriceOrder
+
+' サブステップ：注文確認
+class HTMLString {
+  + HTMLString: string
+}
+class EmailAddress extends Undefined {}
+
+class OrderAcknowledgment {
+  + EmailAddress: EmailAddress
+  + Letter: HTMLString
+}
+EmailAddress <-- OrderAcknowledgment
+HTMLString <-- OrderAcknowledgment
+
+class CreateOrderAcknowledgmentLetter <<Dependency>> {
+  + CreateOrderAcknowledgmentLetter(PricedOrder): HTMLString
+}
+PricedOrder <-- CreateOrderAcknowledgmentLetter
+HTMLString <-- CreateOrderAcknowledgmentLetter
+
+enum SendResult {
+  + Sent: "Sent"
+  + NotSent: "NotSent"
+}
+
+class SendOrderAcknowledgment <<Dependency>> {
+  + SendOrderAcknowledgment(OrderAcknowledgment)\n\t: Async<SendResult>
+}
+OrderAcknowledgment <-- SendOrderAcknowledgment
+SendResult <-- SendOrderAcknowledgment
+
+class OrderAcknowledgmentSent <<Event>> {
+  + OrderID: OrderID
+  + EmailAddress: EmailAddress
+}
+OrderID <-- OrderAcknowledgmentSent
+EmailAddress <-- OrderAcknowledgmentSent
+
+class AcknowledgeOrder <<SubStep>> {
+  + AcknowledgeOrder(\n\t CreateOrderAcknowledgmentLetter,\n\t SendOrderAcknowledgment,\n\t PricedOrder,\n ): Async<OrderAcknowledgmentSent option>
+}
+CreateOrderAcknowledgmentLetter <-- AcknowledgeOrder
+SendOrderAcknowledgment <-- AcknowledgeOrder
+PricedOrder <-- AcknowledgeOrder
+OrderAcknowledgmentSent <-- AcknowledgeOrder
+
+' サブステップ：イベント作成・返却
+class OrderPlaced <<Event>> extends PricedOrder {}
+class BillableOrderPlaced <<Event>> {
+  + OrderID: OrderID
+  + BillingAddress: Address
+  + AmountToBill: BillingAmount
+}
+OrderID <-- BillableOrderPlaced
+Address <-- BillableOrderPlaced
+BillingAmount <-- BillableOrderPlaced
+
+enum PlaceOrderEvent <<Event>> {
+  + OrderPlaced: OrderPlaced
+  + BillableOrderPlaced: BillableOrderPlaced
+  + AcknowledgmentSent: OrderAcknowledgmentSent
+}
+OrderPlaced <-- PlaceOrderEvent
+BillableOrderPlaced <-- PlaceOrderEvent
+OrderAcknowledgmentSent <-- PlaceOrderEvent
+
+class CreateEvents <<SubStep>> {
+  + CreateEvents(PricedOrder): PlaceOrderEvent list
+}
+PricedOrder <-- CreateEvents
+PlaceOrderEvent <-- CreateEvents
+
+' ワークフロー失敗時の出力（エラー型）
+enum PlaceOrderError <<Error>> {
+  + ValidationError: ValidationError list
+  ' TODO etc... その他のエラー
+}
+ValidationError <-- PlaceOrderError
+
+' 注文確定のワークフロー：「注文確定」プロセス
+class PlaceOrderWorkflow <<WorkFlow>> {
+  + PlaceOrderWorkflow(PlaceOrder)\n\t: AsyncResult<PlaceOrderEvent list, PlaceOrderError>
+}
+PlaceOrder <-- PlaceOrderWorkflow
+AsyncResult <-- PlaceOrderWorkflow
+PlaceOrderEvent <-- PlaceOrderWorkflow
+PlaceOrderError <-- PlaceOrderWorkflow
+
+@enduml
