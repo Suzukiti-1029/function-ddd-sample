@@ -1,0 +1,25 @@
+{
+  "name": "Doc Container",
+  "dockerComposeFile": "../../docker-compose.yml",
+  "service": "doc",
+  "workspaceFolder": "/workspace/doc",
+  "remoteUser": "root",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      // 必要な拡張機能を自動でインストール
+      "extensions": [
+        "jebbs.plantuml",
+        "streetsidesoftware.code-spell-checker",
+        "oderwat.indent-rainbow",
+        "yzhang.markdown-all-in-one",
+        "shd101wyy.markdown-preview-enhanced",
+        "christian-kohler.path-intellisense",
+        "Gruntfuggly.todo-tree",
+        "mosapride.zenkaku"
+      ]
+    }
+  }
+}

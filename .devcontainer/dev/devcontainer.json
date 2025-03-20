@@ -1,6 +1,6 @@
 {
   "name": "F# Dev Container",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../../docker-compose.yml",
   "service": "dev",
   "workspaceFolder": "/workspace/function-ddd-sample",
   // "postCreateCommand": "dotnet fsi --version",

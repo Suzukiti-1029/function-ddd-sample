@@ -1,4 +1,14 @@
 services:
+  doc:
+    build:
+      context: ./doc
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    command: sleep infinity
+    volumes:
+      - type: bind
+        source: ./doc
+        target: /workspace/doc
   dev:
     build:
       context: ./
