@@ -28,14 +28,17 @@ interface Undefined.Undefined <<exn>> {}
 
 ' 型の定義
 package Domain {
+  class ValueObject.UserID <<ValueObject>> extends Undefined.Undefined {}
+
   package Shared {
     class AsyncResult<success, failure> <<Shared>> extends Microsoft.Fsharp.Async {}
     class Command<data> <<Shared>> {
       + Data: data
       + Timestamp: System.DateTime
-      + UserID: string
+      + UserID: UserID
       ' TODO etc...
     }
+    Domain.ValueObject.UserID <-- Domain.Shared.Command
   }
 
   package ValueObject {
@@ -86,11 +89,7 @@ package Domain {
     class PricedOrderLine <<ValueObject>> extends Undefined.Undefined {}
     class BillingAmount <<ValueObject>> extends Undefined.Undefined {}
 
-    ' TODO 仮（違う）
-    class CheckedAddress <<ValueObject>> {
-      + CheckedAddress: UnValidatedAddress
-    }
-    Domain.ValueObject.UnValidatedAddress <-- Domain.ValueObject.CheckedAddress
+    class CheckedAddress <<ValueObject>> extends Undefined.Undefined {}
 
     class Price <<ValueObject>> extends Undefined.Undefined {}
     class HTMLString <<ValueObject>> {

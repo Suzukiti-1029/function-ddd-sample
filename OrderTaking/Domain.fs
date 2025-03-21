@@ -4,11 +4,12 @@ namespace OrderTaking.Domain
 // TODO 未知の型
 type Undefined = exn
 
-type DateTime = Undefined
+type UserID = UserID of Undefined
+
 type Command<'data> = {
   Data: 'data
-  Timestamp: DateTime
-  UserID: string
+  Timestamp: System.DateTime
+  UserID: UserID
   // TODO etc...
 }
 
@@ -50,8 +51,6 @@ type OrderQuantity =
 
 // * 識別子
 type OrderID = Undefined
-type OrderLineID = Undefined
-type CustomerID = Undefined
 
 // * 注文とその構成要素
 type UnValidatedCustomerInfo = Undefined
@@ -140,8 +139,7 @@ type OrderTakingCommand =
 type CheckProductCodeExists = ProductCode -> bool
 
 // ? 依存関係：住所存在確認サービス
-// TODO 仮
-type CheckedAddress = CheckedAddress of UnValidatedAddress
+type CheckedAddress = CheckedAddress of Undefined
 
 type AddressValidationError = AddressValidationError of string
 // リモートのサービスを呼び出している
