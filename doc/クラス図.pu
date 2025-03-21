@@ -20,7 +20,8 @@ skinparam class {
 package Microsoft.Fsharp {
   class Async<Result<success, failure>> {}
 }
-package Fsharpx.Collections {}
+' * 今回は未使用
+' package Fsharpx.Collections {}
 
 ' 共通
 interface Undefined.Undefined <<exn>> {}

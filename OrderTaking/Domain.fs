@@ -1,8 +1,6 @@
 namespace OrderTaking.Domain
 
 // ! 共通の型
-open FSharpx.Collections
-
 // TODO 未知の型
 type Undefined = exn
 
