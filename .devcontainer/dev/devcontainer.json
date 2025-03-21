@@ -12,8 +12,13 @@
       },
       // 必要な拡張機能を自動でインストール
       "extensions": [
-        "ionide.ionide-fsharp", // F#開発用拡張機能
-        "ms-dotnettools.csharp" // C#拡張（必要に応じて、F#プロジェクトでも利用する場合がある）
+        "ionide.ionide-fsharp",
+        "ms-dotnettools.csharp",
+        "mhutchie.git-graph",
+        "streetsidesoftware.code-spell-checker",
+        "Gruntfuggly.todo-tree",
+        "mosapride.zenkaku",
+        "christian-kohler.path-intellisense"
       ]
     }
   }
