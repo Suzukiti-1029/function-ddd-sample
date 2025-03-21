@@ -77,7 +77,10 @@ package Domain {
     ' 今回のシステムではいらない
     ' class OrderLineID <<ValueObject>> extends Undefined.Undefined {}
     ' class CustomerID <<ValueObject>> extends Undefined.Undefined {}
-    class UnValidatedCustomerInfo <<ValueObject>> extends Undefined.Undefined {}
+    class UnValidatedCustomer <<ValueObject>> {
+      + Name: string
+      + Email: string
+    }
     class UnValidatedAddress <<ValueObject>> {
       + UnValidatedAddress: string
     }
@@ -113,11 +116,11 @@ package Domain {
   package Entity {
     class UnValidatedOrder <<Entity>> {
       OrderID: string
-      CustomerInfo: UnValidatedCustomerInfo
+      CustomerInfo: UnValidatedCustomer
       ShippingAddress: UnValidatedAddress
       ' TODO etc...
     }
-    Domain.ValueObject.UnValidatedCustomerInfo <-- Domain.Entity.UnValidatedOrder
+    Domain.ValueObject.UnValidatedCustomer <-- Domain.Entity.UnValidatedOrder
     Domain.ValueObject.UnValidatedAddress <-- Domain.Entity.UnValidatedOrder
 
     class ValidatedOrder <<Entity>> {
@@ -171,7 +174,7 @@ package Domain {
     }
 
     ' ワークフロー失敗時の出力（エラー型）
-    enum Domain.Errors.PlaceOrderError <<Error>> {
+    enum PlaceOrderError <<Error>> {
       + ValidationError: ValidationError list
       ' TODO etc... その他のエラー
     }
@@ -263,17 +266,17 @@ package Infrastructure {
 package Usecases {
   package Commands {
     ' ワークフローの入力（コマンド）
-    class PlaceOrder <<Command>> extends Domain.Shared.Command {
+    class PlaceOrderCommand <<Command>> extends Domain.Shared.Command {
       <data = UnValidatedOrder>
     }
-    Domain.Entity.UnValidatedOrder <-- PlaceOrder
+    Domain.Entity.UnValidatedOrder <-- Usecases.Commands.PlaceOrderCommand
 
     enum OrderTakingCommand <<Command>> {
-      + Place: PlaceOrder
+      + Place: PlaceOrderCommand
       ' + Change: ChangeOrder
       ' + Cancel: CancelOrder
     }
-    PlaceOrder <-- OrderTakingCommand
+    Usecases.Commands.PlaceOrderCommand <-- Usecases.Commands.OrderTakingCommand
   }
 
   package Workflows {
@@ -315,9 +318,9 @@ package Usecases {
 
     ' 注文確定のワークフロー：「注文確定」プロセス
     class PlaceOrderWorkflow <<WorkFlow>> {
-      + PlaceOrderWorkflow(PlaceOrder)\n\t: AsyncResult<PlaceOrderEvent list, PlaceOrderError>
+      + PlaceOrderWorkflow(PlaceOrderCommand)\n\t: AsyncResult<PlaceOrderEvent list, PlaceOrderError>
     }
-    Usecases.Commands.PlaceOrder <-- Usecases.Workflows.PlaceOrderWorkflow
+    Usecases.Commands.PlaceOrderCommand <-- Usecases.Workflows.PlaceOrderWorkflow
     Domain.Shared.AsyncResult <-- Usecases.Workflows.PlaceOrderWorkflow
     Domain.Events.PlaceOrderEvent <-- Usecases.Workflows.PlaceOrderWorkflow
     Domain.Errors.PlaceOrderError <-- Usecases.Workflows.PlaceOrderWorkflow
