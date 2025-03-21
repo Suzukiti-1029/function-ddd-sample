@@ -3,6 +3,7 @@
     "enduml",
     "Fsharpx",
     "skinparam",
-    "startuml"
+    "startuml",
+    "Usecases"
   ]
 }
