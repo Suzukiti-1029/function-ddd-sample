@@ -6,7 +6,8 @@
     <RootNamespace>function_ddd_sample</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup><Compile Include="OrderTaking/Domain.fs" />
+  <ItemGroup>
+    <Compile Include="OrderTaking/Domain.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
