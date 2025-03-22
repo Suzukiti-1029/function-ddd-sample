@@ -17,7 +17,7 @@ skinparam class {
 }
 
 ' 外部ライブラリ
-package Microsoft.Fsharp {
+package Fsharp {
   class Async<Result<success, failure>> {}
 }
 ' * 今回は未使用
@@ -64,7 +64,7 @@ package Domain {
     class KilogramQuantity <<ValueObject>> {
       - KilogramQuantity: decimal<kg>
     }
-    Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols.kg <-- Domain.ValueObject.KilogramQuantity
+    FSharp.Data.UnitSystems.SI.UnitSymbols.kg <-- Domain.ValueObject.KilogramQuantity
 
     enum OrderQuantity <<ValueObject>> {
       + Unit: UnitQuantity

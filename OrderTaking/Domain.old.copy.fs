@@ -1,15 +1,17 @@
-namespace OrderTaking.Domain
+namespace OrderTaking.DomainOldCopy
 
 // ! 共通の型
+// 未使用
+// open FSharpx.Collections
+
 // TODO 未知の型
 type Undefined = exn
 
-type UserID = UserID of Undefined
-
+type DateTime = Undefined
 type Command<'data> = {
   Data: 'data
-  Timestamp: System.DateTime
-  UserID: UserID
+  Timestamp: DateTime
+  UserID: string
   // TODO etc...
 }
 
@@ -43,7 +45,7 @@ module UnitQuantity =
   let value(UnitQuantity qty) = qty
 
 type KilogramQuantity = KilogramQuantity of decimal<
-  Microsoft.FSharp.Data.UnitSystems.SI.UnitSymbols.kg
+  Data.UnitSystems.SI.UnitSymbols.kg
 >
 type OrderQuantity =
     | Unit of UnitQuantity
@@ -51,6 +53,8 @@ type OrderQuantity =
 
 // * 識別子
 type OrderID = Undefined
+type OrderLineID = Undefined
+type CustomerID = Undefined
 
 // * 注文とその構成要素
 type UnValidatedCustomerInfo = Undefined
@@ -139,7 +143,8 @@ type OrderTakingCommand =
 type CheckProductCodeExists = ProductCode -> bool
 
 // ? 依存関係：住所存在確認サービス
-type CheckedAddress = CheckedAddress of Undefined
+// TODO 仮
+type CheckedAddress = CheckedAddress of UnValidatedAddress
 
 type AddressValidationError = AddressValidationError of string
 // リモートのサービスを呼び出している
