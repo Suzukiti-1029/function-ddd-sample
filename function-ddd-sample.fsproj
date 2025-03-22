@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="OrderTaking/Domain.fs" />
     <Compile Include="OrderTaking/DomainApi.fs" />
     <Compile Include="OrderTaking/PlaceOrderWorkflow.fs" />
     <Compile Include="OrderTaking/Domain.work.fs" />

@@ -1,5 +1,7 @@
 namespace OrderTaking.DomainApi
 
+open OrderTaking.Domain
+
 // * Undefined
 // TODO 未知の型
 type Undefined = exn
@@ -9,7 +11,6 @@ type AsyncResult<'success, 'failure> = Async<Result<'success, 'failure>>
 
 // * Domain.ValueObject
 type UserID = UserID of Undefined
-type OrderID = Undefined
 type Address = Address of string
 type BillingAmount = Undefined
 type EmailAddress = Undefined
@@ -60,12 +61,12 @@ type PlaceOrderCommand = Command<UnValidatedOrder>
 // * Domain.Events
 type OrderPlaced = PricedOrder
 type BillableOrderPlaced = {
-  OrderID: OrderID
+  OrderID: ValueObject.OrderID
   BillingAddress: Address
   AmountToBill: BillingAmount
 }
 type OrderAcknowledgmentSent = {
-  OrderID: OrderID
+  OrderID: ValueObject.OrderID
   EmailAddress: EmailAddress
 }
 type PlaceOrderEvent =

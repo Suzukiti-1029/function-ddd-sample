@@ -73,7 +73,12 @@ package Domain {
     Domain.ValueObject.UnitQuantity <-- Domain.ValueObject.OrderQuantity
     Domain.ValueObject.KilogramQuantity <-- Domain.ValueObject.OrderQuantity
 
-    class OrderID <<ValueObject>> extends Undefined.Undefined {}
+    class OrderID <<ValueObject>> {
+      - OrderID: string
+      + create(str: string): OrderID or failwith ' TODO
+      ' これはいらない・定義したくないかも
+      + value(OrderID: OrderID): string
+    }
     ' 今回のシステムではいらない
     ' class OrderLineID <<ValueObject>> extends Undefined.Undefined {}
     ' class CustomerID <<ValueObject>> extends Undefined.Undefined {}

@@ -1,5 +1,6 @@
 namespace OrderTaking.PlaceOrderWorkflow
 
+open OrderTaking.Domain
 // ドメインAPIモジュールから型を持ってくる
 open OrderTaking.DomainApi
 
@@ -26,7 +27,7 @@ type CustomerInfo = Undefined
 
 // * Domain.Entity
 type ValidatedOrder = {
-  OrderID: OrderID
+  OrderID: ValueObject.OrderID
   CustomerInfo: CustomerInfo
   ShippingAddress: Address
   BillingAddress: Address
@@ -39,7 +40,7 @@ type PricedOrderLine = Undefined
 
 // * Domain.Entity
 type PricedOrder = {
-  OrderID: OrderID // エンティティのID
+  OrderID: ValueObject.OrderID // エンティティのID
   CustomerInfo: CustomerInfo
   ShippingAddress: Address
   BillingAddress: Address

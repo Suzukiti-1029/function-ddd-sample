@@ -1,5 +1,6 @@
 namespace OrderTaking.DomainWork
 
+open OrderTaking.Domain
 open OrderTaking.DomainApi
 open OrderTaking.PlaceOrderWorkflow
 
