@@ -4,7 +4,24 @@ open OrderTaking.Domain
 // ドメインAPIモジュールから型を持ってくる
 open OrderTaking.DomainApi
 
+// * Domain.Shared
+type String50 = private String50 of string
+module String50 =
+  let create str =
+    if System.String.IsNullOrEmpty(str) then
+      // TODO
+      failwith "String50は、nullまたは空にしないでください"
+    elif str.Length > 50 then
+      // TODO
+      failwith "String50は、50文字超過にしないでください"
+    else
+      String50 str
+
 // * Domain.ValueObject
+type PersonalName = {
+  FirstName: String50
+  LastName: String50
+}
 // 製品コード関連
 type WidgetCode = WidgetCode of string
   // 制約: 先頭が"W"＋数字4桁
@@ -23,7 +40,10 @@ type Price = Undefined
 // * Domain.ValueObject
 type ValidatedOrderLine = Undefined
 
-type CustomerInfo = Undefined
+type CustomerInfo = {
+  Name: PersonalName
+  EmailAddress: EmailAddress
+}
 
 // * Domain.Entity
 type ValidatedOrder = {

@@ -39,6 +39,12 @@ package Domain {
       ' TODO etc...
     }
     Domain.ValueObject.UserID <-- Domain.Shared.Command
+
+    class String50 <<Shared>> {
+      - String50: string
+      ' TODO
+      + create(str: string): String50 or failwith
+    }
   }
 
   package ValueObject {
@@ -75,21 +81,39 @@ package Domain {
 
     class OrderID <<ValueObject>> {
       - OrderID: string
-      + create(str: string): OrderID or failwith ' TODO
-      ' これはいらない・定義したくないかも
+      ' TODO
+      + create(str: string): OrderID or failwith
+      ' TODO これはいらない・定義したくないかも
       + value(OrderID: OrderID): string
     }
     ' 今回のシステムではいらない
     ' class OrderLineID <<ValueObject>> extends Undefined.Undefined {}
     ' class CustomerID <<ValueObject>> extends Undefined.Undefined {}
     class UnValidatedCustomer <<ValueObject>> {
-      + Name: string
-      + Email: string
+      + FirstName: string
+      + LastName: string
+      + EmailAddress: string
     }
     class UnValidatedAddress <<ValueObject>> {
       + UnValidatedAddress: string
     }
-    class CustomerInfo <<ValueObject>> extends Undefined.Undefined {}
+
+    class PersonalName <<ValueObject>> {
+      + FirstName: String50
+      + LastName: String50
+    }
+    class EmailAddress <<ValueObject>> {
+      - EmailAddress: string
+      ' TODO
+      + create(str: string): EmailAddress or failwith
+    }
+    class CustomerInfo <<ValueObject>> {
+      + Name: PersonalName
+      + EmailAddress: EmailAddress
+    }
+    Domain.ValueObject.PersonalName <-- Domain.ValueObject.CustomerInfo
+    Domain.ValueObject.EmailAddress <-- Domain.ValueObject.CustomerInfo
+
     class Address <<ValueObject>> {
       + Address: string
     }
@@ -103,7 +127,6 @@ package Domain {
     class HTMLString <<ValueObject>> {
       + HTMLString: string
     }
-    class EmailAddress <<ValueObject>> extends Undefined.Undefined {}
 
     class OrderAcknowledgment <<ValueObject>> {
       + EmailAddress: EmailAddress
