@@ -10,6 +10,7 @@
     <Compile Include="OrderTaking/Domain.fs" />
     <Compile Include="OrderTaking/DomainApi.fs" />
     <Compile Include="OrderTaking/PlaceOrderWorkflow.fs" />
+    <Compile Include="OrderTaking/PlaceOrderWorkflow.work.fs" />
     <Compile Include="OrderTaking/Domain.work.fs" />
     <Compile Include="OrderTaking/Domain.old.copy.fs" />
     <Compile Include="Program.fs" />

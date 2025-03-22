@@ -280,6 +280,12 @@ package Domain {
   }
 }
 
+package InComplete {
+  class toCustomerInfo {
+    + toCustomerInfo(\n\t customer: UnValidatedCustomer\n ): CustomerInfo
+  }
+}
+
 package Infrastructure {
   package Provider {}
   Domain.Interface.Provider <|.. Infrastructure.Provider
