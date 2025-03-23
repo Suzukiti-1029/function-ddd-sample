@@ -335,6 +335,10 @@ package InComplete {
   class toAddress {
     + toAddress(\n\t checkAddressExists: CheckAddressExists,\n\t unValidatedAddress: UnValidatedAddress\n ): Address
   }
+
+  class toOrderQuantity {
+    + toOrderQuantity(\n\t productCode: ProductCode,\n\t quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>\n ): OrderQuantity
+  }
 }
 
 package Infrastructure {

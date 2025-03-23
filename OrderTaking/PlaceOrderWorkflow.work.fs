@@ -162,6 +162,19 @@ module InComplete =
     // 住所を返す
     address
 
+  let toOrderQuantity productCode (quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>) =
+    match productCode with
+      | Widget _ ->
+        quantity
+        |> (fun x -> x / 1.0M<Data.UnitSystems.SI.UnitSymbols.kg>) // 単位排除
+        |> int // decimalをintに変換
+        |> UnitQuantity.create // ユニット数に変換
+        |> Unit // OrderQuantity型に持ち上げる
+      | Gizmo _ ->
+        quantity
+        |> KilogramQuantity.create // キログラム量に変換
+        |> Kilogram // OrderQuantity型に持ち上げる
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
