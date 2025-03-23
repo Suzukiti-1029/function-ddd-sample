@@ -170,7 +170,12 @@ package Domain {
   }
 
   package Entity {
-    class UnValidatedOrderLine <<Entity>> extends Undefined.Undefined {}
+    class UnValidatedOrderLine <<Entity>> {
+      + OrderLineID: string
+      + ProductCode: string
+      + Quantity: string
+    }
+
     class ValidatedOrderLine <<Entity>> extends Undefined.Undefined {}
     class PricedOrderLine <<Entity>> extends Undefined.Undefined {}
 

@@ -41,7 +41,12 @@ type UnValidatedCustomer = {
 type UnValidatedAddress = UnValidateAddress of string
 
 // * Domain.Entity
-type UnValidatedOrderLine = UnValidatedOrderLine of Undefined
+type UnValidatedOrderLine = {
+  OrderLineID: string
+  ProductCode: string
+  Quantity: string
+}
+
 type UnValidatedOrder = {
   OrderID: string
   CustomerInfo: UnValidatedCustomer
