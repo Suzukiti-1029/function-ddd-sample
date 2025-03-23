@@ -6,6 +6,8 @@ hide empty members
 skinparam class {
   BackgroundColor<<SubStep>> LightSkyBlue
   BackgroundColor<<Dependency>> LightGreen
+  BackgroundColor<<DataModel>> Green
+  BackgroundColor<<Adapter>> GreenYellow
   BackgroundColor<<ValueObject>> DarkSalmon
   BackgroundColor<<Entity>> LightSalmon
   BackgroundColor<<Aggregate>> Salmon
@@ -43,11 +45,19 @@ package Domain {
     class String50 <<Shared>> {
       - String50: string
       ' TODO
-      + create(str: string): String50 or failwith
+      + create(str: string): String50 or invalidArg
+      ' TODO
+      + createOption(str: string): String50 option or invalidArg
     }
   }
 
   package ValueObject {
+    class ZipCode <<ValueObject>> {
+      - ZipCode: string
+      ' TODO
+      + create(str: string): ZipCode or invalidArg
+    }
+
     class WidgetCode <<ValueObject>> {
       + WidgetCode: string
     }
@@ -82,7 +92,7 @@ package Domain {
     class OrderID <<ValueObject>> {
       - OrderID: string
       ' TODO
-      + create(str: string): OrderID or failwith
+      + create(str: string): OrderID or invalidArg
       ' TODO これはいらない・定義したくないかも
       + value(OrderID: OrderID): string
     }
@@ -105,7 +115,7 @@ package Domain {
     class EmailAddress <<ValueObject>> {
       - EmailAddress: string
       ' TODO
-      + create(str: string): EmailAddress or failwith
+      + create(str: string): EmailAddress or invalidArg
     }
     class CustomerInfo <<ValueObject>> {
       + Name: PersonalName
@@ -115,13 +125,33 @@ package Domain {
     Domain.ValueObject.EmailAddress <-- Domain.ValueObject.CustomerInfo
 
     class Address <<ValueObject>> {
-      + Address: string
+      + AddressLine1: String50
+      + AddressLine2: String50 option
+      + AddressLine3: String50 option
+      + AddressLine4: String50 option
+      + City: String50
+      + ZipCode: ZipCode
     }
+    Domain.Shared.String50 <-- Domain.ValueObject.Address
+    Domain.ValueObject.ZipCode <-- Domain.ValueObject.Address
+
     class ValidatedOrderLine <<ValueObject>> extends Undefined.Undefined {}
     class PricedOrderLine <<ValueObject>> extends Undefined.Undefined {}
     class BillingAmount <<ValueObject>> extends Undefined.Undefined {}
 
-    class CheckedAddress <<ValueObject>> extends Undefined.Undefined {}
+    class CheckedAddressData {
+      + AddressLine1: string
+      + AddressLine2: string
+      + AddressLine3: string
+      + AddressLine4: string
+      + City: string
+      + ZipCode: string
+    }
+
+    class CheckedAddress <<ValueObject>> {
+      + CheckedAddress: CheckedAddressData
+    }
+    CheckedAddress o-- CheckedAddressData
 
     class Price <<ValueObject>> extends Undefined.Undefined {}
     class HTMLString <<ValueObject>> {
@@ -283,6 +313,10 @@ package Domain {
 package InComplete {
   class toCustomerInfo {
     + toCustomerInfo(\n\t customer: UnValidatedCustomer\n ): CustomerInfo
+  }
+
+  class toAddress {
+    + toAddress(\n\t checkAddressExists: CheckAddressExists,\n\t unValidatedAddress: UnValidatedAddress\n ): Address
   }
 }
 

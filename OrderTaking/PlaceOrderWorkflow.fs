@@ -4,19 +4,6 @@ open OrderTaking.Domain
 // ドメインAPIモジュールから型を持ってくる
 open OrderTaking.DomainApi
 
-// * Domain.Shared
-type String50 = private String50 of string
-module String50 =
-  let create str =
-    if System.String.IsNullOrEmpty(str) then
-      // TODO
-      failwith "String50は、nullまたは空にしないでください"
-    elif str.Length > 50 then
-      // TODO
-      failwith "String50は、50文字超過にしないでください"
-    else
-      String50 str
-
 // * Domain.ValueObject
 type PersonalName = {
   FirstName: String50
@@ -93,7 +80,15 @@ type CheckProductCodeExists = ProductCode -> bool
 type AddressValidationError = AddressValidationError of string
 
 // * Domain.ValueObject
-type CheckedAddress = CheckedAddress of Undefined
+type CheckedAddress = CheckAddress of CheckedAddressData
+and CheckedAddressData = {
+    AddressLine1: string
+    AddressLine2: string
+    AddressLine3: string
+    AddressLine4: string
+    City: string
+    ZipCode: string
+}
 
 // * Domain.Interface.Remote <|.. Infrastructure.Remote
 // リモートのサービスを呼び出している

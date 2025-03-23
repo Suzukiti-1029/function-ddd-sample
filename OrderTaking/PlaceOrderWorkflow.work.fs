@@ -132,6 +132,36 @@ module InComplete =
     // そしてそれを返す
     customerInfo
 
+  let toAddress (checkAddressExists: CheckAddressExists) unValidatedAddress =
+    // リモートサービスを呼び出す
+    let checkedAddress = checkAddressExists unValidatedAddress
+    // パターンマッチを使用して内部値を抽出する
+    let (CheckAddress checkedAddress) = checkedAddress
+
+    let addressLine1 =
+      checkedAddress.AddressLine1 |> String50.create
+    let addressLine2 =
+      checkedAddress.AddressLine2 |> String50.createOption
+    let addressLine3 =
+      checkedAddress.AddressLine3 |> String50.createOption
+    let addressLine4 =
+      checkedAddress.AddressLine4 |> String50.createOption
+    let city =
+      checkedAddress.City |> String50.create
+    let zipCode =
+      checkedAddress.ZipCode |> ZipCode.create
+    // 住所を作成する
+    let address: Address = {
+      AddressLine1 = addressLine1
+      AddressLine2 = addressLine2
+      AddressLine3 = addressLine3
+      AddressLine4 = addressLine4
+      City = city
+      ZipCode = zipCode
+    }
+    // 住所を返す
+    address
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
@@ -146,7 +176,7 @@ module Workflows =
 
     let shippingAddress =
       unValidatedOrder.ShippingAddress
-      |> toAddress // TODO ヘルパー関数
+      |> InComplete.toAddress checkAddressExists // ヘルパー関数
 
     // TODO unValidatedOrder の各プロパティに対して同様に行う
 
@@ -155,7 +185,7 @@ module Workflows =
     {
       OrderID = orderID
       CustomerInfo = customerInfo
-      // ShippingAddress = shippingAddress
+      ShippingAddress = shippingAddress
       // BillingAddress = // TODO ...
       // Lines = // TODO ...
     }

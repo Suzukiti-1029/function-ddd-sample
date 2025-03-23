@@ -1,7 +1,5 @@
 namespace OrderTaking.DomainApi
 
-open System.Text.RegularExpressions
-
 open OrderTaking.Domain
 
 // * Undefined
@@ -13,19 +11,17 @@ type AsyncResult<'success, 'failure> = Async<Result<'success, 'failure>>
 
 // * Domain.ValueObject
 type UserID = UserID of Undefined
-type Address = Address of string
+
+type Address = {
+  AddressLine1: String50
+  AddressLine2: String50 option
+  AddressLine3: String50 option
+  AddressLine4: String50 option
+  City: String50
+  ZipCode: ZipCode
+}
+
 type BillingAmount = Undefined
-type EmailAddress = private EmailAddress of string
-module EmailAddress =
-  let create str =
-    if System.String.IsNullOrEmpty(str) then
-      // TODO
-      failwith "EmailAddressは、nullまたは空にしないでください"
-    elif not (Regex.IsMatch(str, @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.IgnoreCase)) then
-      // TODO
-      failwith "EmailAddressは、正しい形式で指定してください"
-    else
-      EmailAddress str
 
 // * Domain.Errors
 type ValidationError = {
