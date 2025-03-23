@@ -216,7 +216,8 @@ module Workflows =
 
     let orderLines =
       unValidatedOrder.OrderLines
-      |> // TODO
+      // `toValidatedOrderLine` を用いて各行を変換する
+      |> List.map (InComplete.toValidatedOrderLine checkProductCodeExists)
 
     // すべてのフィールドの準備ができたら、それらを使って
     // 新しい「検証済みの注文」レコードを作成し、返す
