@@ -63,5 +63,17 @@ module ValueObject =
         OrderID str
 
     /// 注文ID の内部値を取り出す
-    let value(OrderID str) = // パラメーターのところですでにアンラップしている
-      str // 内部値を返す
+    // let value(OrderID str) = // パラメーターのところですでにアンラップしている
+    //   str // 内部値を返す
+
+  type OrderLineID = private OrderLineID of string
+  module OrderLineID =
+    let create str =
+      if System.String.IsNullOrEmpty(str) then
+        // TODO
+        invalidArg "str" "OrderLineIDは、nullまたは空にしないでください"
+      elif str.Length > 50 then
+        // TODO
+        invalidArg "str" "OrderLineIDは、50文字超過にしないでください"
+      else
+        OrderLineID str

@@ -93,12 +93,19 @@ package Domain {
       - OrderID: string
       ' TODO
       + create(str: string): OrderID or invalidArg
-      ' TODO これはいらない・定義したくないかも
-      + value(OrderID: OrderID): string
+      ' これはいる？
+      ' + value(OrderID: OrderID): string
     }
+
+    class OrderLineID <<ValueObject>> {
+      - OrderLineID: string
+      ' TODO
+      + create(str: string): OrderLineID or invalidArg
+    }
+
     ' 今回のシステムではいらない
-    ' class OrderLineID <<ValueObject>> extends Undefined.Undefined {}
     ' class CustomerID <<ValueObject>> extends Undefined.Undefined {}
+
     class UnValidatedCustomer <<ValueObject>> {
       + FirstName: string
       + LastName: string
