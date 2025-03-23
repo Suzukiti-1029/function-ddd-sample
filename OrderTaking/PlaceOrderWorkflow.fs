@@ -25,14 +25,13 @@ type Price = Undefined
 
 // 検証済みの状態
 // * Domain.ValueObject
-type ValidatedOrderLine = Undefined
-
 type CustomerInfo = {
   Name: PersonalName
   EmailAddress: EmailAddress
 }
 
 // * Domain.Entity
+type ValidatedOrderLine = Undefined
 type ValidatedOrder = {
   OrderID: ValueObject.OrderID
   CustomerInfo: CustomerInfo
@@ -42,10 +41,8 @@ type ValidatedOrder = {
 }
 
 // 価格計算済みの状態
-// * Domain.ValueObject
-type PricedOrderLine = Undefined
-
 // * Domain.Entity
+type PricedOrderLine = Undefined
 type PricedOrder = {
   OrderID: ValueObject.OrderID // エンティティのID
   CustomerInfo: CustomerInfo

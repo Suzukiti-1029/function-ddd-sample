@@ -108,8 +108,6 @@ package Domain {
       + UnValidatedAddress: string
     }
 
-    class UnValidatedOrderLine <<ValueObject>> extends Undefined.Undefined {}
-
     class PersonalName <<ValueObject>> {
       + FirstName: String50
       + LastName: String50
@@ -137,8 +135,6 @@ package Domain {
     Domain.Shared.String50 <-- Domain.ValueObject.Address
     Domain.ValueObject.ZipCode <-- Domain.ValueObject.Address
 
-    class ValidatedOrderLine <<ValueObject>> extends Undefined.Undefined {}
-    class PricedOrderLine <<ValueObject>> extends Undefined.Undefined {}
     class BillingAmount <<ValueObject>> extends Undefined.Undefined {}
 
     class CheckedAddressData {
@@ -174,6 +170,10 @@ package Domain {
   }
 
   package Entity {
+    class UnValidatedOrderLine <<Entity>> extends Undefined.Undefined {}
+    class ValidatedOrderLine <<Entity>> extends Undefined.Undefined {}
+    class PricedOrderLine <<Entity>> extends Undefined.Undefined {}
+
     class UnValidatedOrder <<Entity>> {
       + OrderID: string
       + CustomerInfo: UnValidatedCustomer
@@ -183,6 +183,7 @@ package Domain {
     }
     Domain.ValueObject.UnValidatedCustomer <-- Domain.Entity.UnValidatedOrder
     Domain.ValueObject.UnValidatedAddress <-- Domain.Entity.UnValidatedOrder
+    Domain.Entity.UnValidatedOrderLine <-- Domain.Entity.UnValidatedOrder
 
     class ValidatedOrder <<Entity>> {
       + OrderID: OrderID
@@ -194,7 +195,7 @@ package Domain {
     Domain.ValueObject.OrderID <-- Domain.Entity.ValidatedOrder
     Domain.ValueObject.CustomerInfo <-- Domain.Entity.ValidatedOrder
     Domain.ValueObject.Address <-- Domain.Entity.ValidatedOrder
-    Domain.ValueObject.ValidatedOrderLine <-- Domain.Entity.ValidatedOrder
+    Domain.Entity.ValidatedOrderLine <-- Domain.Entity.ValidatedOrder
 
     class PricedOrder <<Entity>> {
       OrderID: OrderID
@@ -207,7 +208,7 @@ package Domain {
     Domain.ValueObject.OrderID <-- Domain.Entity.PricedOrder
     Domain.ValueObject.CustomerInfo <-- Domain.Entity.PricedOrder
     Domain.ValueObject.Address <-- Domain.Entity.PricedOrder
-    Domain.ValueObject.PricedOrderLine <-- Domain.Entity.PricedOrder
+    Domain.Entity.PricedOrderLine <-- Domain.Entity.PricedOrder
     Domain.ValueObject.BillingAmount <-- Domain.Entity.PricedOrder
 
     enum Order <<Aggregate>> {
