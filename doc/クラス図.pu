@@ -181,10 +181,15 @@ package Domain {
     class UnValidatedOrderLine <<Entity>> {
       + OrderLineID: string
       + ProductCode: string
-      + Quantity: string
+      + Quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>
     }
 
-    class ValidatedOrderLine <<Entity>> extends Undefined.Undefined {}
+    class ValidatedOrderLine <<Entity>> {
+      OrderLineID: ValueObject.OrderLineID
+      ProductCode: ProductCode
+      Quantity: OrderQuantity
+    }
+
     class PricedOrderLine <<Entity>> extends Undefined.Undefined {}
 
     class UnValidatedOrder <<Entity>> {
@@ -338,6 +343,10 @@ package InComplete {
 
   class toOrderQuantity {
     + toOrderQuantity(\n\t productCode: ProductCode,\n\t quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>\n ): OrderQuantity
+  }
+
+  class toValidatedOrderLine {
+    + toValidatedOrderLine(\n\t checkProductCodeExists: CheckProductCodeExists,\n\t unValidatedOrderLine: UnValidatedOrderLine\n ): ValidatedOrderLine
   }
 }
 

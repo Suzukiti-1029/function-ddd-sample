@@ -64,7 +64,11 @@ type CustomerInfo = {
 }
 
 // * Domain.Entity
-type ValidatedOrderLine = Undefined
+type ValidatedOrderLine = {
+  OrderLineID: ValueObject.OrderLineID
+  ProductCode: ProductCode
+  Quantity: OrderQuantity
+}
 
 type ValidatedOrder = {
   OrderID: ValueObject.OrderID

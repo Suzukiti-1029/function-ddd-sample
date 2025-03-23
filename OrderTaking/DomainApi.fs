@@ -44,7 +44,7 @@ type UnValidatedAddress = UnValidateAddress of string
 type UnValidatedOrderLine = {
   OrderLineID: string
   ProductCode: string
-  Quantity: string
+  Quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>
 }
 
 type UnValidatedOrder = {

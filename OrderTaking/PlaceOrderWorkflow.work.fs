@@ -175,6 +175,25 @@ module InComplete =
         |> KilogramQuantity.create // キログラム量に変換
         |> Kilogram // OrderQuantity型に持ち上げる
 
+  let toValidatedOrderLine checkProductCodeExists
+   (unValidatedOrderLine: UnValidatedOrderLine) =
+    let orderLineID =
+      unValidatedOrderLine.OrderLineID
+      |> ValueObject.OrderLineID.create
+    let productCode =
+      unValidatedOrderLine.ProductCode
+      |> toProductCode checkProductCodeExists // ヘルパー関数
+    let quantity =
+      unValidatedOrderLine.Quantity
+      |> toOrderQuantity productCode // ヘルパー関数
+
+    let validatedOrderLine = {
+      OrderLineID = orderLineID
+      ProductCode = productCode
+      Quantity = quantity
+    }
+    validatedOrderLine
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
