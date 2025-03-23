@@ -178,7 +178,13 @@ module Workflows =
       unValidatedOrder.ShippingAddress
       |> InComplete.toAddress checkAddressExists // ヘルパー関数
 
-    // TODO unValidatedOrder の各プロパティに対して同様に行う
+    let billingAddress =
+      unValidatedOrder.BillingAddress
+      |> InComplete.toAddress checkAddressExists // ヘルパー関数
+
+    let orderLines =
+      unValidatedOrder.OrderLines
+      |> // TODO
 
     // すべてのフィールドの準備ができたら、それらを使って
     // 新しい「検証済みの注文」レコードを作成し、返す
@@ -186,6 +192,6 @@ module Workflows =
       OrderID = orderID
       CustomerInfo = customerInfo
       ShippingAddress = shippingAddress
-      // BillingAddress = // TODO ...
-      // Lines = // TODO ...
+      BillingAddress = billingAddress
+      OrderLines = orderLines
     }

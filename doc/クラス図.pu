@@ -108,6 +108,8 @@ package Domain {
       + UnValidatedAddress: string
     }
 
+    class UnValidatedOrderLine <<ValueObject>> extends Undefined.Undefined {}
+
     class PersonalName <<ValueObject>> {
       + FirstName: String50
       + LastName: String50
@@ -173,10 +175,11 @@ package Domain {
 
   package Entity {
     class UnValidatedOrder <<Entity>> {
-      OrderID: string
-      CustomerInfo: UnValidatedCustomer
-      ShippingAddress: UnValidatedAddress
-      ' TODO etc...
+      + OrderID: string
+      + CustomerInfo: UnValidatedCustomer
+      + ShippingAddress: UnValidatedAddress
+      + BillingAddress: UnValidatedAddress
+      + OrderLines: UnValidatedOrderLine list
     }
     Domain.ValueObject.UnValidatedCustomer <-- Domain.Entity.UnValidatedOrder
     Domain.ValueObject.UnValidatedAddress <-- Domain.Entity.UnValidatedOrder
