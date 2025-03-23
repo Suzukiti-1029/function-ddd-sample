@@ -11,29 +11,6 @@ type Undefined = exn
 
 // ! 型の定義
 
-// * 注文数量関係
-type UnitQuantity = private UnitQuantity of int
-module UnitQuantity =
-  // ユニット数の「スマートコンストラクタ」を定義
-  let create qty =
-    if qty < 1 then
-      // 失敗
-      Error "UnitQuantity can not be negative"
-    else if qty > 1000 then
-      // 失敗
-      Error "UnitQuantity can not be more than 1000"
-    else
-      // 成功 -- 戻り値を構築
-      Ok (UnitQuantity qty)
-  let value(UnitQuantity qty) = qty
-
-type KilogramQuantity = KilogramQuantity of decimal<
-  Data.UnitSystems.SI.UnitSymbols.kg
->
-type OrderQuantity =
-    | Unit of UnitQuantity
-    | Kilos of KilogramQuantity
-
 // * 識別子
 
 // * 注文とその構成要素

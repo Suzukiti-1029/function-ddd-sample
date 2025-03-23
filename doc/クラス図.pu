@@ -74,17 +74,18 @@ package Domain {
 
     class UnitQuantity <<ValueObject>> {
       - UnitQuantity: int
-      + create(qty: int): Result<UnitQuantity, Error>
-      + value(qty: UnitQuantity): UnitQuantity
+      + create(qty: int): UnitQuantity or invalidArg
+      ' + value(qty: UnitQuantity): UnitQuantity
     }
     class KilogramQuantity <<ValueObject>> {
       - KilogramQuantity: decimal<kg>
+      + create(qty: decimal<kg>): KilogramQuantity or invalidArg
     }
     FSharp.Data.UnitSystems.SI.UnitSymbols.kg <-- Domain.ValueObject.KilogramQuantity
 
     enum OrderQuantity <<ValueObject>> {
       + Unit: UnitQuantity
-      + Kilos: KilogramQuantity
+      + Kilogram: KilogramQuantity
     }
     Domain.ValueObject.UnitQuantity <-- Domain.ValueObject.OrderQuantity
     Domain.ValueObject.KilogramQuantity <-- Domain.ValueObject.OrderQuantity

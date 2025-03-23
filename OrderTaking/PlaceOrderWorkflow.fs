@@ -17,6 +17,39 @@ type GizmoCode = GizmoCode of string
 type ProductCode =
   | Widget of WidgetCode
   | Gizmo of GizmoCode
+
+// 注文数量関係
+type UnitQuantity = private UnitQuantity of int
+module UnitQuantity =
+  /// ユニット数の「スマートコンストラクタ」を定義
+  let create qty =
+    if qty < 1 then
+      // TODO
+      invalidArg "qty" "UnitQuantityは、0以下にしないでください"
+    else if qty > 1000 then
+      // TODO
+      invalidArg "qty" "UnitQuantityは、1000超過にしないでください"
+    else
+      // 成功 -- 戻り値を構築
+      UnitQuantity qty
+  // let value(UnitQuantity qty) = qty
+
+type KilogramQuantity = private KilogramQuantity of decimal<
+  Data.UnitSystems.SI.UnitSymbols.kg
+>
+module KilogramQuantity =
+  let create qty =
+    if qty < 0.05M<Data.UnitSystems.SI.UnitSymbols.kg> then
+      invalidArg "qty" "KilogramQuantityは、0.05未満にできません"
+    elif qty > 100.00M<Data.UnitSystems.SI.UnitSymbols.kg> then
+      invalidArg "qty" "KilogramQuantityは、100.00を超えることはできません"
+    else
+      KilogramQuantity qty
+
+type OrderQuantity =
+    | Unit of UnitQuantity
+    | Kilogram of KilogramQuantity
+
 type Price = Undefined
 
 // --------------------
@@ -32,6 +65,7 @@ type CustomerInfo = {
 
 // * Domain.Entity
 type ValidatedOrderLine = Undefined
+
 type ValidatedOrder = {
   OrderID: ValueObject.OrderID
   CustomerInfo: CustomerInfo
