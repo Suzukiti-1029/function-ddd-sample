@@ -68,6 +68,7 @@ package Domain {
     enum ProductCode <<ValueObject>> {
       + Widget of WidgetCode
       + Gizmo of GizmoCode
+      + create(code: string): ProductCode or invalidArg
     }
     Domain.ValueObject.WidgetCode <-- Domain.ValueObject.ProductCode
     Domain.ValueObject.GizmoCode <-- Domain.ValueObject.ProductCode

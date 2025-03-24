@@ -17,6 +17,26 @@ type GizmoCode = GizmoCode of string
 type ProductCode =
   | Widget of WidgetCode
   | Gizmo of GizmoCode
+module ProductCode =
+  let create (code: string) : ProductCode =
+    if code.StartsWith "W" then
+      if code.Length = 5 then
+        let digits = code.Substring 1
+        match System.Int32.TryParse digits with
+        | true, _ -> Widget (WidgetCode code)
+        | _ -> invalidArg "code" "WidgetCodeの数字部分は正しい数字4桁にしてください"
+      else
+        invalidArg "code" "WidgetCodeは「'W'+数字4桁」にしてください"
+    elif code.StartsWith "G" then
+      if code.Length = 4 then
+        let digits = code.Substring 1
+        match System.Int32.TryParse digits with
+        | true, _ -> Gizmo (GizmoCode code)
+        | _ -> invalidArg "code" "GizmoCodeの数字部分は正しい数字3桁にしてください。"
+      else
+        invalidArg "code" "GizmoCodeは「'G'+数字3桁」にしてください"
+    else
+        invalidArg "code" "ProductCodeは、「'W'+数字4桁」または「'G'+数字3桁」にしてください"
 
 // 注文数量関係
 type UnitQuantity = private UnitQuantity of int
