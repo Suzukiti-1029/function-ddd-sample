@@ -342,6 +342,10 @@ package InComplete {
     + toAddress(\n\t checkAddressExists: CheckAddressExists,\n\t unValidatedAddress: UnValidatedAddress\n ): Address
   }
 
+  class toProductCode {
+    + toProductCode(\n\t checkProductCodeExists: CheckProductCodeExists,\n\t productCode: ProductCode\n ): ProductCode
+  }
+
   class toOrderQuantity {
     + toOrderQuantity(\n\t productCode: ProductCode,\n\t quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>\n ): OrderQuantity
   }

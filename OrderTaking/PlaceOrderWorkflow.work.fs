@@ -162,6 +162,12 @@ module InComplete =
     // 住所を返す
     address
 
+  let toProductCode (checkProductCodeExists: CheckProductCodeExists) productCode =
+    productCode
+    |> ProductCode.create
+    |> checkProductCodeExists
+    // boolを返す :(
+
   let toOrderQuantity productCode (quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>) =
     match productCode with
       | Widget _ ->
