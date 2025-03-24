@@ -342,6 +342,10 @@ package InComplete {
     + toAddress(\n\t checkAddressExists: CheckAddressExists,\n\t unValidatedAddress: UnValidatedAddress\n ): Address
   }
 
+  class predicateToPassthru {
+    + predicateToPassthru(\n\t errorMsg: string,\n\t f: ('a -> bool)\n ): ('a -> 'a)
+  }
+
   class toProductCode {
     + toProductCode(\n\t checkProductCodeExists: CheckProductCodeExists,\n\t productCode: ProductCode\n ): ProductCode
   }

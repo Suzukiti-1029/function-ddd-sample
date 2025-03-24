@@ -162,11 +162,23 @@ module InComplete =
     // 住所を返す
     address
 
+  let predicateToPassthru errorMsg f x =
+    if f x then
+      x
+    else
+      failwith errorMsg
+
   let toProductCode (checkProductCodeExists: CheckProductCodeExists) productCode =
+    // パイプラインで使用するのに適した
+    // ProductCode -> ProductCode 型のローカル関数を作る
+    let checkProduct productCode =
+      let errorMsg = sprintf "ProductCode（%A）は正しい値を指定してください" productCode
+      predicateToPassthru errorMsg checkProductCodeExists productCode
+
+    // パイプラインを組み立てる
     productCode
     |> ProductCode.create
-    |> checkProductCodeExists
-    // boolを返す :(
+    |> checkProduct
 
   let toOrderQuantity productCode (quantity: decimal<Data.UnitSystems.SI.UnitSymbols.kg>) =
     match productCode with
