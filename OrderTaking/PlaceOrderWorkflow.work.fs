@@ -103,7 +103,7 @@ type ValidateOrder =
 // // サブステップ自体にエラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
 // type PriceOrder =
 //   GetProductPrice // 依存関係
-//     -> ValidateOrder // 入力
+//     -> ValidatedOrder // 入力
 //     -> Result<PricedOrder, PricingError> // 出力
 
 // --------------------
