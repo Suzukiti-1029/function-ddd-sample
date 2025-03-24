@@ -99,12 +99,12 @@ type ValidateOrder =
 // // * Domain.Errors
 // type PricingError = PricingError of string
 
-// // * Usecases.Workflows
-// // サブステップ自体にエラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
-// type PriceOrder =
-//   GetProductPrice // 依存関係
-//     -> ValidatedOrder // 入力
-//     -> Result<PricedOrder, PricingError> // 出力
+// * Usecases.Workflows
+// サブステップ自体にエラーが発生する可能性がある（結果が馬鹿でかい値やマイナス値など）
+type PriceOrder =
+  GetProductPrice // 依存関係
+    -> ValidatedOrder // 入力
+    -> PricedOrder // 出力
 
 // --------------------
 // 実装
@@ -246,3 +246,7 @@ module Workflows =
       BillingAddress = billingAddress
       OrderLines = orderLines
     }
+
+  let priceOrder: PriceOrder =
+    fun getProductPrice validatedOrder ->
+      failwith "not implemented"
