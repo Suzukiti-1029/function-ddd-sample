@@ -100,7 +100,13 @@ type ValidatedOrder = {
 
 // 価格計算済みの状態
 // * Domain.Entity
-type PricedOrderLine = Undefined
+type PricedOrderLine = {
+  OrderLineID: ValueObject.OrderLineID
+  ProductCode: ProductCode
+  Quantity: OrderQuantity
+  LinePrice: Price
+}
+
 type PricedOrder = {
   OrderID: ValueObject.OrderID // エンティティのID
   CustomerInfo: CustomerInfo

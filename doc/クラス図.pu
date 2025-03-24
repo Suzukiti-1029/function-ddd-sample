@@ -191,7 +191,12 @@ package Domain {
       Quantity: OrderQuantity
     }
 
-    class PricedOrderLine <<Entity>> extends Undefined.Undefined {}
+    class PricedOrderLine <<Entity>> {
+      OrderLineID: ValueObject.OrderLineID
+      ProductCode: ProductCode
+      Quantity: OrderQuantity
+      LinePrice: Price
+    }
 
     class UnValidatedOrder <<Entity>> {
       + OrderID: string
