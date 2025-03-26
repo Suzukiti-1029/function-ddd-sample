@@ -87,6 +87,7 @@ package Domain {
     enum OrderQuantity <<ValueObject>> {
       + Unit: UnitQuantity
       + Kilogram: KilogramQuantity
+      + value(orderQuantity: OrderQuantity): decimal
     }
     Domain.ValueObject.UnitQuantity <-- Domain.ValueObject.OrderQuantity
     Domain.ValueObject.KilogramQuantity <-- Domain.ValueObject.OrderQuantity
@@ -160,7 +161,13 @@ package Domain {
     }
     CheckedAddress o-- CheckedAddressData
 
-    class Price <<ValueObject>> extends Undefined.Undefined {}
+    class Price <<ValueObject>> {
+      - Price: decimal
+      ' TODO
+      + create(price: decimal): Price or invalidArg
+      + multiply(qty: decimal, price: Price): Price or invalidArg
+    }
+
     class HTMLString <<ValueObject>> {
       + HTMLString: string
     }

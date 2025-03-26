@@ -69,8 +69,24 @@ module KilogramQuantity =
 type OrderQuantity =
     | Unit of UnitQuantity
     | Kilogram of KilogramQuantity
+module OrderQuantity =
+  let value(orderQuantity) =
+    match orderQuantity with
+    | Unit (UnitQuantity qty) -> decimal qty
+    | Kilogram (KilogramQuantity qty) ->
+      qty
+      |> (fun x -> x / 1.0M<Data.UnitSystems.SI.UnitSymbols.kg>) // 単位排除
 
-type Price = Undefined
+type Price = private Price of decimal
+module Price =
+  let create price =
+    if price < 0m then
+      invalidArg "price" "Priceは、負の値にしないでください。"
+    else
+      Price price
+
+  let multiply qty (Price p) =
+    create (qty * p)
 
 // --------------------
 // 注文のライフサイクル
