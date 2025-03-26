@@ -33,7 +33,19 @@ module Price =
   let multiply qty (Price p) =
     create (qty * p)
 
-type BillingAmount = Undefined
+type BillingAmount = private BillingAmount of decimal
+module BillingAmount =
+  let create amount =
+    if amount < 0m then
+      invalidArg "amount" "BillingAmountは負の値にしないでください"
+    // とりあえず１億以上はアウト
+    elif amount >= 100000000m then
+      invalidArg "amount" "BillingAmountは1億以上にしないでください"
+    else
+      BillingAmount amount
+  let sumPrices prices =
+    let total = prices |> List.map Price.value |> List.sum
+    create total
 
 // * Domain.Errors
 type ValidationError = {

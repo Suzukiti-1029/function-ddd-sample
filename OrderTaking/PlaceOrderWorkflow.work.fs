@@ -264,4 +264,18 @@ module Workflows =
       let lines =
         validatedOrder.OrderLines
         |> List.map(InComplete.toPricedOrderLine getProductPrice)
-      failwith "not implemented"
+      let amountToBill =
+        lines
+        // 各行の価格を取得する
+        |> List.map(fun line -> line.LinePrice)
+        // 合計して請求総額にする
+        |> BillingAmount.sumPrices
+      let pricedOrder: PricedOrder = {
+        OrderID = validatedOrder.OrderID
+        CustomerInfo = validatedOrder.CustomerInfo
+        ShippingAddress = validatedOrder.ShippingAddress
+        BillingAddress = validatedOrder.BillingAddress
+        OrderLines = lines
+        AmountToBill = amountToBill
+      }
+      pricedOrder

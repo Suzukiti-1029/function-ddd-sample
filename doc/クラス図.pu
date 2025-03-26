@@ -145,7 +145,12 @@ package Domain {
     Domain.Shared.String50 <-- Domain.ValueObject.Address
     Domain.ValueObject.ZipCode <-- Domain.ValueObject.Address
 
-    class BillingAmount <<ValueObject>> extends Undefined.Undefined {}
+    class BillingAmount <<ValueObject>> {
+      - BillingAmount: decimal
+      ' TODO
+      + create(amount: decimal): BillingAmount or invalidArg
+      + sumPrices(prices: Price list): BillingAmount
+    }
 
     class CheckedAddressData {
       + AddressLine1: string
