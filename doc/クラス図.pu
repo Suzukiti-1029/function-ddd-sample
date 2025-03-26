@@ -369,6 +369,10 @@ package InComplete {
   class toValidatedOrderLine {
     + toValidatedOrderLine(\n\t checkProductCodeExists: CheckProductCodeExists,\n\t unValidatedOrderLine: UnValidatedOrderLine\n ): ValidatedOrderLine
   }
+
+  class toPricedOrderLine {
+    + toPricedOrderLine(\n\t getProductPrice: GetProductPrice,\n\t line: ValidatedOrderLine\n ): PricedOrderLine
+  }
 }
 
 package Infrastructure {

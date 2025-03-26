@@ -212,6 +212,18 @@ module InComplete =
     }
     validatedOrderLine
 
+  /// 検証済みの注文明細行を価格計算済みの注文明細行に変換する
+  let toPricedOrderLine getProductPrice (line: ValidatedOrderLine): PricedOrderLine =
+    let qty = line.Quantity |> OrderQuantity.value
+    let price = line.ProductCode |> getProductPrice
+    let linePrice = price |> Price.multiply qty
+    {
+      OrderLineID = line.OrderLineID
+      ProductCode = line.ProductCode
+      Quantity = line.Quantity
+      LinePrice = linePrice
+    }
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
@@ -249,4 +261,7 @@ module Workflows =
 
   let priceOrder: PriceOrder =
     fun getProductPrice validatedOrder ->
+      let lines =
+        validatedOrder.OrderLines
+        |> List.map(InComplete.toPricedOrderLine getProductPrice)
       failwith "not implemented"
