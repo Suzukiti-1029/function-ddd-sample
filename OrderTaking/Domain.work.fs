@@ -58,27 +58,7 @@ type OrderTakingCommand =
 
 // * サブステップ：注文確認
 // ? 依存関係：注文確認の文書生成サービス
-type HTMLString = HTMLString of string
-// ローカル関数
-type OrderAcknowledgment = {
-  EmailAddress: EmailAddress
-  Letter: HTMLString
-}
-type CreateOrderAcknowledgementLetter =
-  PricedOrder -> HTMLString
-
 // ? 依存関係：注文確認送信サービス
-type SendResult = Sent | NotSent
-// I/O処理をするが、エラーは気にしない
-type SendOrderAcknowledgment =
-  OrderAcknowledgment -> Async<SendResult>
-
-type AcknowledgeOrder =
-  CreateOrderAcknowledgementLetter // 依存関係
-    -> SendOrderAcknowledgment // 依存関係
-    -> PricedOrder // 入力
-    // 注文書が送信されていない可能性
-    -> Async<OrderAcknowledgmentSent option> // 出力
 
 // * サブステップ：イベント作成・返却
 // * （ワークフロー成功時の出力（イベント型））

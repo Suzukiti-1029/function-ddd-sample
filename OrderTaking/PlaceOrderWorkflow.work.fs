@@ -106,6 +106,36 @@ type PriceOrder =
     -> ValidatedOrder // 入力
     -> PricedOrder // 出力
 
+// ----- 注文の確認 -----
+
+// // * Domain.ValueObject
+// type HTMLString = HTMLString of string
+
+// // * Domain.Service
+// // ローカル関数
+// type CreateOrderAcknowledgmentLetter =
+//   PricedOrder -> HTMLString
+
+// // * Domain.ValueObject
+// type OrderAcknowledgment = {
+//   EmailAddress: EmailAddress
+//   Letter: HTMLString
+// }
+// type SendResult = Sent | NotSent
+
+// * Domain.Interface.Remote <|.. Infrastructure.Remote
+// I/O処理をするが、エラーは気にしない
+type SendOrderAcknowledgment =
+  OrderAcknowledgment -> SendResult
+
+// * Usecases.Workflows
+type AcknowledgeOrder =
+  CreateOrderAcknowledgmentLetter // 依存関係
+    -> SendOrderAcknowledgment // 依存関係
+    -> PricedOrder // 入力
+    // 注文書が送信されていない可能性
+    -> OrderAcknowledgmentSent option // 出力
+
 // --------------------
 // 実装
 // --------------------
