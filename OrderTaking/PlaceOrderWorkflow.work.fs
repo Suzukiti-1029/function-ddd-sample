@@ -309,3 +309,22 @@ module Workflows =
         AmountToBill = amountToBill
       }
       pricedOrder
+
+  let acknowledgeOrder: AcknowledgeOrder =
+    fun createOrderAcknowledgmentLetter sendOrderAcknowledgment pricedOrder ->
+      let letter = createOrderAcknowledgmentLetter pricedOrder
+      let acknowledgment = {
+        EmailAddress = pricedOrder.CustomerInfo.EmailAddress
+        Letter = letter
+      }
+      // 確認が正常に送信された場合、対応するイベントを返す
+      // そうでなければNoneを返す
+      match sendOrderAcknowledgment acknowledgment with
+      | Sent ->
+        let event = {
+          OrderID = pricedOrder.OrderID
+          EmailAddress = pricedOrder.CustomerInfo.EmailAddress
+        }
+        Some event
+      | NotSent ->
+        None
