@@ -384,6 +384,10 @@ package InComplete {
   class createBillingEvent {
     + createBillingEvent(\n\t placedOrder: PricedOrder\n ): BillableOrderPlaced option
   }
+
+  class listOfOption {
+    + listOfOption(\n\t opt: 'a option\n ): 'a list
+  }
 }
 
 package Infrastructure {

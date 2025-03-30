@@ -275,6 +275,12 @@ module InComplete =
     else
       None
 
+  /// Option型をList型に変換する
+  let listOfOption opt =
+    match opt with
+    | Some x -> [x]
+    | None -> []
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
@@ -349,3 +355,32 @@ module Workflows =
         Some event
       | NotSent ->
         None
+
+  let createEvents: CreateEvents =
+    fun pricedOrder acknowledgmentEventOpt ->
+      let events1 =
+        PricedOrder
+        // 共通の選択型に変換する
+        |> PlaceOrderEvent.OrderPlaced
+        // リストに変換する
+        |> List.singleton
+      let events2 =
+        acknowledgmentEventOpt
+        // 共通の選択型に変換する
+        |> Option.map PlaceOrderEvent.AcknowledgementSent
+        // リストに変換する
+        |> InComplete.listOfOption
+      let events3 =
+        pricedOrder
+        |> InComplete.createBillingEvent
+        // 共通の選択型に変換する
+        |> Option.map PlaceOrderEvent.BillableOrderPlaced
+        // リストに変換する
+        |> InComplete.listOfOption
+
+      // すべてのイベントを返す
+      [
+        yield! events1
+        yield! events2
+        yield! events3
+      ]
