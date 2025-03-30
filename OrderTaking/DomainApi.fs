@@ -46,6 +46,8 @@ module BillingAmount =
   let sumPrices prices =
     let total = prices |> List.map Price.value |> List.sum
     create total
+  let value(BillingAmount p) =
+    p
 
 // * Domain.Errors
 type ValidationError = {

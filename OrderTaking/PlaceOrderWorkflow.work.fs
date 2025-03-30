@@ -263,6 +263,18 @@ module InComplete =
       LinePrice = linePrice
     }
 
+  let createBillingEvent(placedOrder: PricedOrder): BillableOrderPlaced option =
+    let billingAmount = placedOrder.AmountToBill |> BillingAmount.value
+    if billingAmount > 0m then
+      let order = {
+        OrderID = placedOrder.OrderID
+        BillingAddress = placedOrder.BillingAddress
+        AmountToBill = placedOrder.AmountToBill
+      }
+      Some order
+    else
+      None
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->

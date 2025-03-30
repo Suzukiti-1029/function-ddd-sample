@@ -150,6 +150,7 @@ package Domain {
       ' TODO
       + create(amount: decimal): BillingAmount or invalidArg
       + sumPrices(prices: Price list): BillingAmount
+      + value(billingAmount: BillingAmount): decimal
     }
 
     class CheckedAddressData {
@@ -378,6 +379,10 @@ package InComplete {
 
   class toPricedOrderLine {
     + toPricedOrderLine(\n\t getProductPrice: GetProductPrice,\n\t line: ValidatedOrderLine\n ): PricedOrderLine
+  }
+
+  class createBillingEvent {
+    + createBillingEvent(\n\t placedOrder: PricedOrder\n ): BillableOrderPlaced option
   }
 }
 
