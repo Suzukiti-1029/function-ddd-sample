@@ -448,7 +448,7 @@ package Usecases {
 
     ' サブステップ：イベント作成・返却
     class CreateEvents <<SubStep>> {
-      + CreateEvents(PricedOrder): PlaceOrderEvent list
+      + CreateEvents(\n\t PricedOrder,\n\t OrderAcknowledgmentSent option,\n ): PlaceOrderEvent list
     }
     Domain.Entity.PricedOrder <-- Usecases.Workflows.CreateEvents
     Domain.Events.PlaceOrderEvent <-- Usecases.Workflows.CreateEvents

@@ -130,6 +130,15 @@ type Order =
   | Priced of PricedOrder
   // etc...
 
+// ==============================
+// パート1: 設計
+// ==============================
+
+// ワークフローのパブリックな部分（API）は、
+// `PlaceOrderWorkflow`関数やその入力である
+// `UnValidatedOrder`のように別の場所で定義されています。
+// 以下の型はワークフロー実装に対し、プライベートです。
+
 // --------------------
 // 内部ステップの定義
 // --------------------
@@ -219,4 +228,5 @@ type AcknowledgeOrder =
 // * Usecases.Workflows
 type CreateEvents =
   PricedOrder // 入力
+    -> OrderAcknowledgmentSent option // 入力（前のステップのイベント）
     -> PlaceOrderEvent list // 出力
