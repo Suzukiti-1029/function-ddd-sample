@@ -96,8 +96,7 @@ package Domain {
       - OrderID: string
       ' TODO
       + create(str: string): OrderID or invalidArg
-      ' これはいる？
-      ' + value(OrderID: OrderID): string
+      + value(OrderID: OrderID): string
     }
 
     class OrderLineID <<ValueObject>> {

@@ -63,8 +63,8 @@ module ValueObject =
         OrderID str
 
     /// 注文ID の内部値を取り出す
-    // let value(OrderID str) = // パラメーターのところですでにアンラップしている
-    //   str // 内部値を返す
+    let value(OrderID str) = // パラメーターのところですでにアンラップしている
+      str // 内部値を返す
 
   type OrderLineID = private OrderLineID of string
   module OrderLineID =
