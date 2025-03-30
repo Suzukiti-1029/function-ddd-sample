@@ -7,6 +7,12 @@ open OrderTaking.Domain
 open OrderTaking.DomainApi
 open OrderTaking.PlaceOrderWorkflow
 
+// ワークフローそれ自体
+// * Usecases.Workflows
+type PlaceOrderWorkflow =
+  PlaceOrderCommand // 入力
+    -> PlaceOrderEvent list // 出力
+
 // // * Domain.ValueObject
 // // 製品コード関連
 // type WidgetCode = WidgetCode of string
@@ -392,3 +398,24 @@ module Workflows =
         yield! events2
         yield! events3
       ]
+
+  let placeOrder
+    checkProductCodeExists // 依存関係
+    checkAddressExists // 依存関係
+    getProductPrice // 依存関係
+    createOrderAcknowledgmentLetter // 依存関係
+    sendOrderAcknowledgment // 依存関係
+    : PlaceOrderWorkflow = // 関数の定義
+    fun placeOrderCommand ->
+      let validatedOrder =
+        placeOrderCommand.Data
+        |> validateOrder checkProductCodeExists checkAddressExists
+      let pricedOrder =
+        validatedOrder
+        |> priceOrder getProductPrice
+      let acknowledgmentOption =
+        pricedOrder
+        |> acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment
+      let events =
+        createEvents pricedOrder acknowledgmentOption
+      events
