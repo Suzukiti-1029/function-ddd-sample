@@ -99,16 +99,22 @@ type PlaceOrderCommand = Command<UnValidatedOrder>
 
 // 受注確定ワークフローの成功出力
 // * Domain.Events
+// 配送コンテキストに送信するイベント
 type OrderPlaced = PricedOrder
+
+// 請求コンテキストに送信するイベント
+// 請求総額が0ではない場合にのみ作成される
 type BillableOrderPlaced = {
   OrderID: ValueObject.OrderID
   BillingAddress: Address
   AmountToBill: BillingAmount
 }
+
 type OrderAcknowledgmentSent = {
   OrderID: ValueObject.OrderID
   EmailAddress: EmailAddress
 }
+
 type PlaceOrderEvent =
   | OrderPlaced of OrderPlaced
   | BillableOrderPlaced of BillableOrderPlaced

@@ -62,8 +62,6 @@ type OrderTakingCommand =
 
 // * サブステップ：イベント作成・返却
 // * （ワークフロー成功時の出力（イベント型））
-type CreateEvents =
-  PricedOrder -> PlaceOrderEvent list
 
 // * ワークフロー失敗時の出力（エラー型）
 

@@ -213,3 +213,10 @@ type AcknowledgeOrder =
     -> PricedOrder // 入力
     // 注文書が送信されていない可能性
     -> Async<OrderAcknowledgmentSent option> // 出力
+
+// ----- イベントの作成 -----
+
+// * Usecases.Workflows
+type CreateEvents =
+  PricedOrder // 入力
+    -> PlaceOrderEvent list // 出力
