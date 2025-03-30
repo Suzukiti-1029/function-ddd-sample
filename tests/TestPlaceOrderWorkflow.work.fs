@@ -37,8 +37,22 @@ type DomainApiTests () =
         LastName = "固定LastName"
         EmailAddress = "sample@test.com"
       }
-      ShippingAddress = UnValidateAddress "東京都千代田区千代田1-1 皇城"
-      BillingAddress = UnValidateAddress "東京都千代田区千代田1-1 皇城"
+      ShippingAddress = {
+          AddressLine1 = "千代田区"
+          AddressLine2 = "千代田"
+          AddressLine3 = "1-1"
+          AddressLine4 = "皇城"
+          City = "東京都"
+          ZipCode = "100-8111"
+        }
+      BillingAddress = {
+          AddressLine1 = "千代田区"
+          AddressLine2 = "千代田"
+          AddressLine3 = "1-1"
+          AddressLine4 = "皇城"
+          City = "東京都"
+          ZipCode = "100-8111"
+        }
       OrderLines = [
         {
           OrderLineID = "OI12345678"
@@ -89,8 +103,22 @@ type DomainApiTests () =
         LastName = "固定LastName"
         EmailAddress = "sample@test.com"
       }
-      ShippingAddress = UnValidateAddress "東京都千代田区千代田1-1 皇城"
-      BillingAddress = UnValidateAddress "東京都千代田区千代田1-1 皇城"
+      ShippingAddress = {
+          AddressLine1 = "千代田区"
+          AddressLine2 = "千代田"
+          AddressLine3 = "1-1"
+          AddressLine4 = "皇城"
+          City = "東京都"
+          ZipCode = "100-8111"
+        }
+      BillingAddress = {
+          AddressLine1 = "千代田区"
+          AddressLine2 = "千代田"
+          AddressLine3 = "1-1"
+          AddressLine4 = "皇城"
+          City = "東京都"
+          ZipCode = "100-8111"
+        }
       OrderLines = [
         {
           OrderLineID = "OI12345678"

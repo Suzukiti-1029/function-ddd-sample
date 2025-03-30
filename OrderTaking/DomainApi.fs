@@ -64,7 +64,14 @@ type UnValidatedCustomer = {
   LastName: string
   EmailAddress: string
 }
-type UnValidatedAddress = UnValidateAddress of string
+type UnValidatedAddress = {
+    AddressLine1: string
+    AddressLine2: string
+    AddressLine3: string
+    AddressLine4: string
+    City: string
+    ZipCode: string
+}
 
 // * Domain.Entity
 type UnValidatedOrderLine = {

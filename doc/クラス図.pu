@@ -114,7 +114,12 @@ package Domain {
       + EmailAddress: string
     }
     class UnValidatedAddress <<ValueObject>> {
-      + UnValidatedAddress: string
+      + AddressLine1: string
+      + AddressLine2: string
+      + AddressLine3: string
+      + AddressLine4: string
+      + City: string
+      + ZipCode: string
     }
 
     class PersonalName <<ValueObject>> {
@@ -152,19 +157,10 @@ package Domain {
       + value(billingAmount: BillingAmount): decimal
     }
 
-    class CheckedAddressData {
-      + AddressLine1: string
-      + AddressLine2: string
-      + AddressLine3: string
-      + AddressLine4: string
-      + City: string
-      + ZipCode: string
-    }
-
     class CheckedAddress <<ValueObject>> {
-      + CheckedAddress: CheckedAddressData
+      + CheckedAddress: UnValidatedAddress
     }
-    CheckedAddress o-- CheckedAddressData
+    CheckedAddress o-- UnValidatedAddress
 
     class Price <<ValueObject>> {
       - Price: decimal

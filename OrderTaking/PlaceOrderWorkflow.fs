@@ -155,15 +155,8 @@ type CheckProductCodeExists = ProductCode -> bool
 type AddressValidationError = AddressValidationError of string
 
 // * Domain.ValueObject
-type CheckedAddress = CheckAddress of CheckedAddressData
-and CheckedAddressData = {
-    AddressLine1: string
-    AddressLine2: string
-    AddressLine3: string
-    AddressLine4: string
-    City: string
-    ZipCode: string
-}
+// XXX
+type CheckedAddress = CheckAddress of UnValidatedAddress
 
 // * Domain.Interface.Remote <|.. Infrastructure.Remote
 // リモートのサービスを呼び出している
