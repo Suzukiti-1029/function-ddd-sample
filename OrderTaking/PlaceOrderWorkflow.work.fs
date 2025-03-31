@@ -103,7 +103,7 @@ type ValidateOrder =
   CheckProductCodeExists // 依存関係
     -> CheckAddressExists // 依存関係
     -> UnValidatedOrder // 入力
-    -> ValidatedOrder
+    -> Result<ValidatedOrder, ValidationError>
 
 // ----- 注文の価格計算 -----
 
@@ -119,7 +119,7 @@ type ValidateOrder =
 type PriceOrder =
   GetProductPrice // 依存関係
     -> ValidatedOrder // 入力
-    -> PricedOrder // 出力
+    -> Result<PricedOrder, PricingError> // 出力
 
 // ----- 注文の確認 -----
 
@@ -322,7 +322,7 @@ module Workflows =
 
     // すべてのフィールドの準備ができたら、それらを使って
     // 新しい「検証済みの注文」レコードを作成し、返す
-    {
+    Ok {
       OrderID = orderID
       CustomerInfo = customerInfo
       ShippingAddress = shippingAddress
@@ -349,7 +349,7 @@ module Workflows =
         OrderLines = lines
         AmountToBill = amountToBill
       }
-      pricedOrder
+      Ok pricedOrder
 
   let acknowledgeOrder: AcknowledgeOrder =
     fun createOrderAcknowledgmentLetter sendOrderAcknowledgment pricedOrder ->
