@@ -7,15 +7,31 @@ open OrderTaking.Domain
 open OrderTaking.DomainApi
 open OrderTaking.PlaceOrderWorkflow
 
+// TODO InComplete 未整理モジュール
+type ServiceInfo = {
+  Name: string
+  Endpoint: System.Uri
+}
+type RemoteServiceError = {
+  Service: ServiceInfo
+  Exception: System.Exception
+}
+
+// * Domain.Errors
 type PlaceOrderError =
   | Validation of ValidationError
   | Pricing of PricingError
+  | RemoteServiceError of RemoteServiceError
 
 // ワークフローそれ自体
 // * Usecases.Workflows
 type PlaceOrderWorkflow =
   PlaceOrderCommand // 入力
     -> PlaceOrderEvent list // 出力
+
+// TODO InComplete 未整理モジュール
+type CheckAddressExistsR =
+  UnValidatedAddress -> Result<CheckedAddress, PlaceOrderError>
 
 // // * Domain.ValueObject
 // // 製品コード関連
@@ -168,6 +184,36 @@ type AcknowledgeOrder =
 // --------------------
 // TODO 未整理モジュール
 module InComplete =
+  /// 例外を投げるサービスをResultを返すサービスに
+  /// 変換するアダプターブロック
+  let serviceExceptionAdapter serviceInfo serviceFn x =
+    try
+      // サービスを呼び出して成功を返す
+      Ok (serviceFn x)
+    with
+      // ドメインに関連するエラーだけをキャッチする（他はトップレベルで補足する）
+      | :? System.TimeoutException as ex ->
+        Error { Service=serviceInfo; Exception=ex }
+      | :? System.UnauthorizedAccessException as ex ->
+        Error { Service=serviceInfo; Exception=ex }
+
+  let checkAddressExistsR
+    checkAddressExists
+    : CheckAddressExistsR =
+      fun address ->
+        let serviceInfo = {
+          Name = "AddressCheckingService"
+          Endpoint = System.Uri "http://localhost:8080" // 適当
+        }
+        // サービスを適合させる
+        let adaptedService =
+          serviceExceptionAdapter serviceInfo checkAddressExists
+        // サービスを呼び出す
+        address
+        |> adaptedService
+        // PlaceOrderError型に持ち上げる
+        |> Result.mapError PlaceOrderError.RemoteServiceError
+
   let toCustomerInfo (customer: UnValidatedCustomer) : CustomerInfo =
     // 顧客情報の各種プロパティを作成する
     // 無効な場合は例外を投げる
