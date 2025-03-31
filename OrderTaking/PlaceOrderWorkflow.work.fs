@@ -7,6 +7,10 @@ open OrderTaking.Domain
 open OrderTaking.DomainApi
 open OrderTaking.PlaceOrderWorkflow
 
+type PlaceOrderError =
+  | Validation of ValidationError
+  | Pricing of PricingError
+
 // ワークフローそれ自体
 // * Usecases.Workflows
 type PlaceOrderWorkflow =
@@ -295,6 +299,20 @@ module InComplete =
     | Some x -> [x]
     | None -> []
 
+  // TODO 一旦validateOrderを引数としている（依存関係があるため）
+  // PlaceOrderErrorを返すように変換した
+  let validateOrderAdapted validateOrder input =
+    input
+    |> validateOrder // 元の関数
+    |> Result.mapError PlaceOrderError.Validation
+
+  // TODO 一旦priceOrderを引数としている（依存関係があるため）
+  // PlaceOrderErrorを返すように変換した
+  let priceOrderAdapted priceOrder input =
+    input
+    |> priceOrder // 元の関数
+    |> Result.mapError PlaceOrderError.Pricing
+
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
@@ -407,15 +425,9 @@ module Workflows =
     sendOrderAcknowledgment // 依存関係
     : PlaceOrderWorkflow = // 関数の定義
     fun placeOrderCommand ->
-      let validatedOrder =
+      // TODO パイプラインで連鎖させるために部分適用している
         placeOrderCommand.Data
-        |> validateOrder checkProductCodeExists checkAddressExists
-      let pricedOrder =
-        validatedOrder
-        |> priceOrder getProductPrice
-      let acknowledgmentOption =
-        pricedOrder
-        |> acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment
-      let events =
-        createEvents pricedOrder acknowledgmentOption
-      events
+        |> InComplete.validateOrderAdapted (validateOrder checkProductCodeExists checkAddressExists)
+        |> Result.bind (InComplete.priceOrderAdapted (priceOrder getProductPrice))
+        |> Result.map (acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment)
+        |> Result.map createEvents // TODO PriceOrderの結果がないのでエラー！

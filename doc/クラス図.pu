@@ -383,6 +383,15 @@ package InComplete {
   class listOfOption {
     + listOfOption(\n\t opt: 'a option\n ): 'a list
   }
+
+  class validateOrderAdapted {
+    + validateOrderAdapted(\n\t validateOrder: ('a -> Result<'b, ValidationError>),\n\t input: 'a\n ): Result<'b, PlaceOrderError>
+  }
+
+  class priceOrderAdapted {
+    + priceOrderAdapted(\n\t priceOrder: ('a -> Result<'b, PricingError>),\n\t input: 'a\n ): Result<'b, PlaceOrderError>
+  }
+
 }
 
 package Infrastructure {
