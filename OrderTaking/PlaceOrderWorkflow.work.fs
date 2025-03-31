@@ -184,6 +184,7 @@ type AcknowledgeOrder =
 // --------------------
 // TODO 未整理モジュール
 module InComplete =
+  // TODO ここからクラス図未記載
   /// 例外を投げるサービスをResultを返すサービスに
   /// 変換するアダプターブロック
   let serviceExceptionAdapter serviceInfo serviceFn x =
@@ -213,6 +214,14 @@ module InComplete =
         |> adaptedService
         // PlaceOrderError型に持ち上げる
         |> Result.mapError PlaceOrderError.RemoteServiceError
+
+  let tee f x =
+    f x
+    x
+
+  let adaptDeadEnd f =
+    Result.map (tee f)
+  // TODO ここまでクラス図未記載
 
   let toCustomerInfo (customer: UnValidatedCustomer) : CustomerInfo =
     // 顧客情報の各種プロパティを作成する
