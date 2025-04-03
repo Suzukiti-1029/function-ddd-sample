@@ -27,7 +27,7 @@ type PlaceOrderError =
 // * Usecases.Workflows
 type PlaceOrderWorkflow =
   PlaceOrderCommand // 入力
-    -> PlaceOrderEvent list // 出力
+    -> Result<PlaceOrderEvent list, PlaceOrderError> // 出力
 
 // TODO InComplete 未整理モジュール
 type CheckAddressExistsR =
@@ -354,20 +354,6 @@ module InComplete =
     | Some x -> [x]
     | None -> []
 
-  // TODO 一旦validateOrderを引数としている（依存関係があるため）
-  // PlaceOrderErrorを返すように変換した
-  let validateOrderAdapted validateOrder input =
-    input
-    |> validateOrder // 元の関数
-    |> Result.mapError PlaceOrderError.Validation
-
-  // TODO 一旦priceOrderを引数としている（依存関係があるため）
-  // PlaceOrderErrorを返すように変換した
-  let priceOrderAdapted priceOrder input =
-    input
-    |> priceOrder // 元の関数
-    |> Result.mapError PlaceOrderError.Pricing
-
 module Workflows =
   let validateOrder: ValidateOrder =
     fun checkProductCodeExists checkAddressExists unValidatedOrder ->
@@ -472,6 +458,7 @@ module Workflows =
         yield! events3
       ]
 
+  /// パイプラインスタイル（Result.bind/Result.map を連結）のコード（関数型プログラミングに合ったスタイル）
   let placeOrder
     checkProductCodeExists // 依存関係
     checkAddressExists // 依存関係
@@ -480,9 +467,63 @@ module Workflows =
     sendOrderAcknowledgment // 依存関係
     : PlaceOrderWorkflow = // 関数の定義
     fun placeOrderCommand ->
-      // TODO パイプラインで連鎖させるために部分適用している
-        placeOrderCommand.Data
-        |> InComplete.validateOrderAdapted (validateOrder checkProductCodeExists checkAddressExists)
-        |> Result.bind (InComplete.priceOrderAdapted (priceOrder getProductPrice))
-        |> Result.map (acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment)
-        |> Result.map createEvents // TODO PriceOrderの結果がないのでエラー！
+      // 受け取ったコマンドから、検証済みの注文を作成する
+      placeOrderCommand.Data
+      |> validateOrder checkProductCodeExists checkAddressExists
+      |> Result.mapError Validation
+      |> Result.bind (fun validatedOrder ->
+        // 価格計算済みの注文を作成する
+        validatedOrder
+        |> priceOrder getProductPrice
+        |> Result.mapError Pricing
+        |> Result.map (fun pricedOrder ->
+          // 注文確認を作成する
+          let acknowledgmentOption =
+            pricedOrder
+            |> acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment
+          // 価格計算済みの注文と、注文確認を使ってイベントを作成する
+          let events = createEvents pricedOrder acknowledgmentOption
+          events
+        )
+      )
+
+  /// 中間変数を使う命令的なコード（手続き型プログラミングのスタイル）
+  let placeOrderV2
+    checkProductCodeExists // 依存関係
+    checkAddressExists // 依存関係
+    getProductPrice // 依存関係
+    createOrderAcknowledgmentLetter // 依存関係
+    sendOrderAcknowledgment // 依存関係
+    : PlaceOrderWorkflow = // 関数の定義
+    fun placeOrderCommand ->
+      // 未検証の注文を取得する
+      let unValidatedOrder = placeOrderCommand.Data
+
+      // 検証済みの注文を作成する
+      let validatedOrderR =
+        unValidatedOrder
+        |> validateOrder checkProductCodeExists checkAddressExists
+        |> Result.mapError Validation
+
+      let pricedOrderR =
+        match validatedOrderR with
+        | Error err -> Error err
+        | Ok validatedOrder ->
+          // 価格計算済みの注文を作成する
+          validatedOrder
+          |> priceOrder getProductPrice
+          |> Result.mapError Pricing
+
+      let eventsR =
+        match pricedOrderR with
+        | Error err -> Error err
+        | Ok pricedOrder ->
+          // 注文確認を作成する
+          let acknowledgmentOption =
+            pricedOrder
+            |> acknowledgeOrder createOrderAcknowledgmentLetter sendOrderAcknowledgment
+          // 価格計算済みの注文と、注文確認を使ってイベントを作成する
+          let events = createEvents pricedOrder acknowledgmentOption
+          Ok events
+
+      eventsR
